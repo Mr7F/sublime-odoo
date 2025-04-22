@@ -1,0 +1,51 @@
+%YAML 1.2
+---
+# Will automatically switch to
+# - OWL: when `<template/>` found
+# - View: when `<odoo/>` found
+# >>> https://github.com/sublimehq/Packages/blob/master/XML/XML.sublime-syntax
+
+name: XML - Odoo
+scope: text.xml
+version: 2
+
+extends: Packages/XML/XML.sublime-syntax
+
+file_extensions:
+  - xml
+
+contexts:
+  tag:
+    - meta_prepend: true
+    - include: owl-component-tag
+    - include: odoo-view-tag
+
+  owl-component-tag:  # OWL template
+    - match: (<)(templates)\s*(.*)?(>)
+      captures:
+        1: punctuation.definition.tag.begin.opening.xml
+        2: entity.name.tag.localname.xml
+        3: string.double.quoted.xml.todo # TODO: make as normal attribute
+        4: punctuation.definition.tag.end.opening.xml
+      embed: scope:text.xml.owl
+      embed_scope: text.xml.owl
+      escape: (</)(templates)(>)
+      escape_captures:
+          1: punctuation.definition.string.end.qweb
+          2: entity.name.tag.localname.xml
+          3: punctuation.definition.string.end.qweb
+
+  odoo-view-tag:  # Odoo view
+    - match: (<)(odoo)(\s.*)?(>)
+      captures:
+        1: punctuation.definition.tag.begin.opening.xml
+        2: entity.name.tag.localname.xml
+        3: string.double.quoted.xml.todo # TODO: make as normal attribute
+        4: punctuation.definition.tag.end.opening.xml
+      embed: scope:text.xml.odoo-view
+      embed_scope: text.xml.odoo-view
+      escape: (</)(odoo)(>)
+      escape_captures:
+          1: punctuation.definition.string.end.qweb
+          2: entity.name.tag.localname.xml
+          3: punctuation.definition.string.end.qweb

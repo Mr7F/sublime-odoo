@@ -1,0 +1,201 @@
+%YAML 1.2
+---
+# Odoo view / template with python as expression
+name: XML - Odoo - View
+scope: text.xml.odoo-view
+version: 2
+
+extends: Packages/XML/XML.sublime-syntax
+
+file_extensions:
+  - xml
+
+variables:
+  owl_attribute_charset: '[A-Za-z0-9._-]'
+
+contexts:
+  tag-attribute:
+    - meta_prepend: true
+    - include: view-directive
+    - include: qweb-directive
+
+  # -----------------------------------------------------------------------
+  # view attributes
+  # -----------------------------------------------------------------------
+
+  view-directive:
+    - match: (readonly|invisible|context|options|domain|required|column_invisible|colors|eval|filter_domain)
+      scope: meta.directive.qweb keyword.other.directive.qweb
+      push: view-directive-assignment
+
+  view-directive-assignment:
+    - meta_content_scope: meta.directive.qweb
+    - match: =
+      scope: meta.directive.qweb punctuation.separator.key-value.qweb
+      set: view-directive-value
+    - include: else-pop
+
+  view-directive-value:
+      - match: \"
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: scope:source.python
+        embed_scope: source.python
+        escape: \"
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+      - match: \'
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: scope:source.python
+        embed_scope: source.python
+        escape: \'
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+
+  # -----------------------------------------------------------------------
+  # tag that contain code
+  # -----------------------------------------------------------------------
+
+  tag:
+    - meta_prepend: true
+    - include: owl-component-tag
+    - include: odoo-view-special-tag
+
+  # Special tags that contain code
+  odoo-view-special-tag:
+    - match: (<)(field)\s(name)(=)(\")(domain|context|code)(\")(>)
+      captures:
+        1: punctuation.definition.tag.begin.opening.xml
+        2: entity.name.tag.localname.xml
+        3: entity.other.attribute-name
+        4: punctuation.separator.key-value.xml
+        5: meta.string.xml punctuation.definition.string.begin.xml
+        6: string.quoted.double.xml
+        7: meta.string.xml punctuation.definition.string.end.xml
+        8: punctuation.definition.tag.end.opening.xml
+      embed: scope:source.python
+      embed_scope: source.python
+      escape: (</)(field)(>)
+      escape_captures:
+          1: punctuation.definition.string.end.qweb
+          2: entity.name.tag.localname.xml
+          3: punctuation.definition.string.end.qweb
+
+  # -----------------------------------------------------------------------
+  # JS template inside python template (kanban view)
+  # -----------------------------------------------------------------------
+
+  owl-component-tag:  # OWL template
+    - match: (<)(templates)(\s.*)?(>)
+      captures:
+        1: punctuation.definition.tag.begin.opening.xml
+        2: entity.name.tag.localname.xml
+        3: tag-attribute-value
+        4: punctuation.definition.tag.end.opening.xml
+      embed: scope:text.xml.owl
+      embed_scope: text.xml.owl
+      escape: (</)(templates)(>)
+      escape_captures:
+          1: punctuation.definition.string.end.qweb
+          2: entity.name.tag.localname.xml
+          3: punctuation.definition.string.end.qweb
+
+  # -----------------------------------------------------------------------
+  # attribute parsing
+  # -----------------------------------------------------------------------
+
+  qweb-directive:  # `t-att` attribute
+    - match: (?i:(t-name|t-set-slot|t-call|t-inherit({{owl_attribute_charset}}*))|t-ref)
+      scope: entity.other.attribute-name
+      push: tag-else-pop
+    - match: (?i:t-attf-{{owl_attribute_charset}}+)
+      scope: entity.other.attribute-name
+      push: qweb-attf-assignment
+    - match: (?i:t-{{owl_attribute_charset}}+)
+      scope: meta.directive.owl keyword.other.directive.owl
+      push: qweb-directive-assignment
+
+  # -----------------------------------------------------------------------
+  # `t-att-`
+  # -----------------------------------------------------------------------
+
+  qweb-directive-assignment:
+    - meta_content_scope: meta.directive.qweb
+    - match: =
+      scope: meta.directive.qweb punctuation.separator.key-value.qweb
+      set: qweb-directive-value
+    - include: else-pop
+
+  qweb-directive-value:
+      - match: \"
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: scope:source.python
+        embed_scope: source.python
+        escape: \"
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+      - match: \'
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: scope:source.python
+        embed_scope: source.python
+        escape: \'
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+
+  # -----------------------------------------------------------------------
+  # `t-attf-`
+  # -----------------------------------------------------------------------
+
+  qweb-attf-assignment:
+    - meta_content_scope: meta.directive.qweb
+    - match: =
+      scope: meta.directive.qweb punctuation.separator.key-value.qweb
+      set: qweb-attf-attribute
+    - include: else-pop
+
+  qweb-attf-attribute:
+      - match: \"
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: qweb-attf-string
+        embed_scope: string.quoted.double.qweb-attf
+        escape: \"
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+      - match: \'
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: qweb-attf-string
+        embed_scope: string.quoted.double.qweb-attf
+        escape: \'
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+
+  qweb-attf-string:
+    - meta_scope: string.quoted.double.qweb-attf
+    - match: \{\{
+      captures:
+        0: punctuation.definition.string.begin.qweb
+      embed: scope:source.python
+      embed_scope: source.python
+      escape: \}\}
+      escape_captures:
+        0: punctuation.definition.string.end.qweb
+    - meta_scope: string.quoted.double.qweb-attf
+    - match: '#\{'
+      captures:
+        0: punctuation.definition.string.begin.qweb
+      embed: scope:source.python
+      embed_scope: source.python
+      escape: \}
+      escape_captures:
+        0: punctuation.definition.string.end.qweb

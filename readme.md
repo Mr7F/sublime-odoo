@@ -1,0 +1,17 @@
+# Sublime - Odoo
+Syntax highlighting for QWeb template, OWL template and views.
+
+Choose "XML - Odoo", and it will automatically choose the right syntax
+- OWL syntax (with JS in expression) if inside `<templates/>`
+- View syntax (with python in expression) if inside `<odoo/>`
+
+It also highlight JS template inside Python template (eg template of kanban views)
+
+<p align="center">
+  <img src="img/demo.png">
+</p>
+
+It also highlight mail templates and "backend" templates.
+<p align="center">
+  <img src="img/demo_template.png">
+</p>
