@@ -33,7 +33,7 @@ contexts:
     - match: =
       scope: meta.directive.qweb punctuation.separator.key-value.qweb
       set: view-directive-value
-    - include: else-pop
+    - include: tag-else-pop
 
   view-directive-value:
       - match: \"
@@ -54,6 +54,7 @@ contexts:
         escape: \'
         escape_captures:
           0: punctuation.definition.string.end.qweb
+      - include: tag-else-pop
 
   # -----------------------------------------------------------------------
   # tag that contain code
@@ -127,7 +128,7 @@ contexts:
     - match: =
       scope: meta.directive.qweb punctuation.separator.key-value.qweb
       set: qweb-directive-value
-    - include: else-pop
+    - include: tag-else-pop
 
   qweb-directive-value:
       - match: \"
@@ -148,6 +149,7 @@ contexts:
         escape: \'
         escape_captures:
           0: punctuation.definition.string.end.qweb
+      - include: tag-else-pop
 
   # -----------------------------------------------------------------------
   # `t-attf-`
@@ -158,7 +160,7 @@ contexts:
     - match: =
       scope: meta.directive.qweb punctuation.separator.key-value.qweb
       set: qweb-attf-attribute
-    - include: else-pop
+    - include: tag-else-pop
 
   qweb-attf-attribute:
       - match: \"
@@ -179,6 +181,7 @@ contexts:
         escape: \'
         escape_captures:
           0: punctuation.definition.string.end.qweb
+      - include: tag-else-pop
 
   qweb-attf-string:
     - meta_scope: string.quoted.double.qweb-attf

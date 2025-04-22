@@ -42,7 +42,7 @@ contexts:
     - match: =
       scope: meta.directive.owl punctuation.separator.key-value.owl
       set: owl-directive-value
-    - include: else-pop
+    - include: tag-else-pop
 
   owl-directive-value:
       - match: \"
@@ -63,6 +63,7 @@ contexts:
         escape: \'
         escape_captures:
           0: punctuation.definition.string.end.owl
+      - include: tag-else-pop
 
   # -----------------------------------------------------------------------
   # `t-attf-`
@@ -73,7 +74,7 @@ contexts:
     - match: =
       scope: meta.directive.owl punctuation.separator.key-value.owl
       set: owl-attf-attribute
-    - include: else-pop
+    - include: tag-else-pop
 
   owl-attf-attribute:
       - match: \"
@@ -94,6 +95,7 @@ contexts:
         escape: \'
         escape_captures:
           0: punctuation.definition.string.end.owl
+      - include: tag-else-pop
 
   owl-attf-string:
     - meta_scope: string.quoted.double.owl-attf
