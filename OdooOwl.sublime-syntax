@@ -23,7 +23,7 @@ contexts:
     - include: owl-directive
 
   owl-directive:  # `t-att` attribute
-    - match: (?i:(t-name|t-set-slot|t-call|t-inherit({{owl_attribute_charset}}*))|t-ref)
+    - match: (?i:(t-name|t-set-slot|t-slot-scope|t-call|t-inherit({{owl_attribute_charset}}*))|t-ref)
       scope: entity.other.attribute-name
       push: tag-else-pop
     - match: (?i:t-attf-{{owl_attribute_charset}}+)

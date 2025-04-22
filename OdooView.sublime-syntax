@@ -24,7 +24,7 @@ contexts:
   # -----------------------------------------------------------------------
 
   view-directive:
-    - match: (readonly|invisible|context|options|domain|required|column_invisible|colors|eval|filter_domain)
+    - match: (readonly|invisible|context|options|domain|required|column_invisible|colors|eval|filter_domain|decoration-{{owl_attribute_charset}}+)
       scope: meta.directive.qweb keyword.other.directive.qweb
       push: view-directive-assignment
 
@@ -108,7 +108,7 @@ contexts:
   # -----------------------------------------------------------------------
 
   qweb-directive:  # `t-att` attribute
-    - match: (?i:(t-name|t-set-slot|t-call|t-inherit({{owl_attribute_charset}}*))|t-ref)
+    - match: (?i:(t-name|t-set-slot|t-slot-scope|t-call(-{{owl_attribute_charset}}+)?|t-inherit({{owl_attribute_charset}}*))|t-ref)
       scope: entity.other.attribute-name
       push: tag-else-pop
     - match: (?i:t-attf-{{owl_attribute_charset}}+)
