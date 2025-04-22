@@ -1,5 +1,5 @@
 # Sublime - Odoo
-Syntax highlighting for QWeb template, OWL template and views.
+Syntax highlighting for QWeb templates, OWL templates and views.
 
 Choose "XML - Odoo", and it will automatically choose the right syntax
 - OWL syntax (with JS in expression) if inside `<templates/>`
