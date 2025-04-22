@@ -30,7 +30,7 @@ contexts:
       scope: entity.other.attribute-name
       push: owl-attf-assignment
     - match: (?i:t-{{owl_attribute_charset}}+)
-      scope: meta.directive.owl keyword.other.directive.owl
+      scope: entity.other.attribute-name
       push: owl-directive-assignment
 
   # -----------------------------------------------------------------------

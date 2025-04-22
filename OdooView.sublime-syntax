@@ -25,7 +25,7 @@ contexts:
 
   view-directive:
     - match: (readonly|invisible|context|options|domain|required|column_invisible|colors|eval|filter_domain|decoration-{{owl_attribute_charset}}+)
-      scope: meta.directive.qweb keyword.other.directive.qweb
+      scope: entity.other.attribute-name
       push: view-directive-assignment
 
   view-directive-assignment:
@@ -115,7 +115,7 @@ contexts:
       scope: entity.other.attribute-name
       push: qweb-attf-assignment
     - match: (?i:t-{{owl_attribute_charset}}+)
-      scope: meta.directive.owl keyword.other.directive.owl
+      scope: meta.directive.owl entity.other.attribute-name
       push: qweb-directive-assignment
 
   # -----------------------------------------------------------------------
