@@ -82,7 +82,7 @@ contexts:
           0: punctuation.definition.string.begin.owl
         pop: 1
         embed: owl-attf-string
-        embed_scope: string.quoted.double.owl-attf
+        embed_scope: meta.string.owl
         escape: \"
         escape_captures:
           0: punctuation.definition.string.end.owl
@@ -91,7 +91,7 @@ contexts:
           0: punctuation.definition.string.begin.owl
         pop: 1
         embed: owl-attf-string
-        embed_scope: string.quoted.double.owl-attf
+        embed_scope: meta.string.owl
         escape: \'
         escape_captures:
           0: punctuation.definition.string.end.owl
@@ -101,21 +101,21 @@ contexts:
     - meta_scope: string.quoted.double.owl-attf
     - match: \{\{
       captures:
-        0: punctuation.definition.string.begin.owl
+        0: punctuation.section.interpolation.begin.owl
       embed: scope:source.js # not using `#expression` for `and` operator
       embed_scope: source.js
       escape: \}\}
       escape_captures:
-        0: punctuation.definition.string.end.owl
+        0: punctuation.section.interpolation.end.owl
     - meta_scope: string.quoted.double.owl-attf
     - match: '#\{'
       captures:
-        0: punctuation.definition.string.begin.owl
+        0: punctuation.section.interpolation.begin.owl
       embed: scope:source.js # not using `#expression` for `and` operator
       embed_scope: source.js
       escape: \}
       escape_captures:
-        0: punctuation.definition.string.end.owl
+        0: punctuation.section.interpolation.end.owl
 
   # -----------------------------------------------------------------------
   # OWL components (camel case tag)
