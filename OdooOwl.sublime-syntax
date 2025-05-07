@@ -26,7 +26,7 @@ contexts:
     - match: (?i:(t-name|t-set-slot|t-slot-scope|t-call|t-inherit({{owl_attribute_charset}}*))|t-ref)
       scope: entity.other.attribute-name
       push: tag-else-pop
-    - match: (?i:t-attf-{{owl_attribute_charset}}+)
+    - match: (?i:(t-attf-{{owl_attribute_charset}}+)|(t-valuef))
       scope: entity.other.attribute-name
       push: owl-attf-assignment
     - match: (?i:t-{{owl_attribute_charset}}+)
