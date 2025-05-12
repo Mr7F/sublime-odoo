@@ -67,7 +67,7 @@ contexts:
 
   # Special tags that contain code
   odoo-view-special-tag:
-    - match: (<)(field)\s(name)(=)(\")(domain|context|code)(\")(>)
+    - match: (<)(field)\s(name)(=)(\")(domain|domain_force|context|code)(\")(>)
       captures:
         1: punctuation.definition.tag.begin.opening.xml
         2: entity.name.tag.localname.xml
