@@ -15,3 +15,7 @@ It also highlight mail templates and "backend" templates.
 <p align="center">
   <img src="img/demo_template.png">
 </p>
+
+You have also
+- some snippet for common code
+- command to create a JS component in a given module / directory

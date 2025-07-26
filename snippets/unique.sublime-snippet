@@ -1,0 +1,12 @@
+<snippet>
+    <content><![CDATA[
+_unique_${1:field_name} = models.Constraint(
+    "UNIQUE(${1:field_name})",
+    "${2:${1:field_name} must be unique}",
+)
+$0
+]]></content>
+    <tabTrigger>_unique_</tabTrigger>
+    <scope>source.python</scope>
+    <description>Odoo / SQL Unique</description>
+</snippet>
