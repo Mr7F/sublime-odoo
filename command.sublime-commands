@@ -1,3 +1,4 @@
 [
   { "caption": "Odoo | New JS Field", "command": "odoo_new_field_widget" },
+  { "caption": "Odoo | Python Model Inherit", "command": "odoo_new_model_inherit" },
 ]

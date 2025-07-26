@@ -25,5 +25,10 @@ Please install `fd-find` to use most of command
 
 > https://github.com/sharkdp/fd
 
+You can automatically create Python inherit, JS component, etc
+
+Type "Odoo" in the command palette to see what's available.
+> https://youtu.be/lkYhHB83vJ8
+
 ## TODO
 - find a way to automatically change `__manifest__.py` without reformatting
