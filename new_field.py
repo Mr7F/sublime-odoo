@@ -11,7 +11,7 @@ import re
 def find_modules(root_dir):
     # Use `fdfind` because it's way faster than python on large project
     cmd = (
-        "fdfind __manifest__.py --absolute-path --base-directory %s --exec dirname {} \; --strip-cwd-prefix"
+        "timeout 2s fdfind __manifest__.py --absolute-path --base-directory %s --exec dirname {} \; --strip-cwd-prefix"
         % shlex.quote(root_dir)
     )
     paths = os.popen(cmd).read().split("\n")
@@ -98,6 +98,9 @@ class OdooNewFieldWidgetCommand(sublime_plugin.TextCommand):
             (m for m in self.modules.values() if current_file_name.startswith(m + "/")),
             None,
         )
+        if not self.modules:
+            sublime.error_message("No Odoo modules found")
+            return
 
         return NewFieldWidgetModuleInputHandler(
             self.modules, current_module, self.view.window()
