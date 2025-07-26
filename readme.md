@@ -1,4 +1,8 @@
 # Sublime - Odoo
+## Snippets
+Add some snippet for common code
+
+## Syntax highlighting
 Syntax highlighting for QWeb templates, OWL templates and views.
 
 Choose "XML - Odoo", and it will automatically choose the right syntax
@@ -16,6 +20,7 @@ It also highlight mail templates and "backend" templates.
   <img src="img/demo_template.png">
 </p>
 
-You have also
-- some snippet for common code
-- command to create a JS component in a given module / directory
+## Commands
+Please install `fd-find` to use most of command
+
+> https://github.com/sharkdp/fd

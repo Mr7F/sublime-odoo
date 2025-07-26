@@ -1,4 +1,6 @@
+import ast
 import os
+import json
 import sublime_plugin
 import functools
 import shlex
@@ -23,7 +25,7 @@ def list_directories(root_dir):
 class OdooNewFieldWidgetCommand(sublime_plugin.TextCommand):
     """Command to create a new JS field."""
 
-    def run(self, edit, module, directory, widget_name):
+    def run(self, edit, module, directory, widget_name, is_field=True):
         # Heuristic to split the name (camel case, snake case, using dot, etc)
         next_name = ""
         prev = ""
@@ -63,8 +65,28 @@ class OdooNewFieldWidgetCommand(sublime_plugin.TextCommand):
                 ),
             )
 
-        self.view.window().open_file(f"{directory}/{snake_name}/{snake_name}.js")
-        self.view.window().open_file(f"{directory}/{snake_name}/{snake_name}.xml")
+        view_js = self.view.window().open_file(
+            f"{directory}/{snake_name}/{snake_name}.js",
+            flags=64,
+        )
+        self.view.window().open_file(
+            f"{directory}/{snake_name}/{snake_name}.xml",
+            flags=64,
+        )
+
+        if import_in_manifest(module, directory, snake_name):
+            view = self.view.window().open_file(
+                f"{module}/__manifest__.py",
+                flags=64,
+            )
+            self.view.window().focus_view(view)
+
+            def _scroll_manifest():
+                view.show(view.size())
+
+            sublime.set_timeout(_scroll_manifest, 100)
+        else:
+            self.view.window().focus_view(view_js)
 
     def input(self, args):
         self.modules = {}
@@ -105,10 +127,6 @@ class NewFieldWidgetModuleInputHandler(sublime_plugin.ListInputHandler):
         if i is not None:
             return modules, i
         return modules
-
-    def initial_text(self):
-        if self.current_module:
-            return
 
     def validate(self, text):
         return True
@@ -199,10 +217,19 @@ import { Component, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
 import { useService } from "@web/core/utils/hooks";
+import { Dropdown } from "@web/core/dropdown/dropdown";
+import { DropdownItem } from "@web/core/dropdown/dropdown_item";
 
 export class %(camel_name)s extends Component {
     static template = "%(module)s.%(camel_name)s";
-    static props = { ...standardFieldProps };
+    static props = {
+        ...standardFieldProps,
+        __TEST_PROPS__: { type: Boolean, optional: true },
+    };
+    static components = {
+        Dropdown,
+        DropdownItem,
+    };
 
     setup() {
         this.notification = useService("notification");
@@ -223,3 +250,68 @@ DEFAULT_XML_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
     </t>
 </templates>
 """
+
+
+def glob_translate(pattern):
+    # TODO: use glob.translate once it runs on python 3.13
+    # https://docs.python.org/3/library/glob.html
+    i = 0
+    n = len(pattern)
+    res = ""
+    while i < n:
+        if pattern[i] == "*":
+            if i + 1 < n and pattern[i + 1] == "*":
+                res += ".*"
+                i += 2
+                if i < n and pattern[i] == "/":
+                    res += "/"
+                    i += 1
+            else:
+                res += "[^/]*"
+                i += 1
+        elif pattern[i] == "/":
+            res += "/"
+            i += 1
+        elif pattern[i] in ".()[]{}+^$\\|":
+            res += "\\" + pattern[i]
+            i += 1
+        else:
+            res += pattern[i]
+            i += 1
+    return "^" + res + "$"
+
+
+def import_in_manifest(module, component_directory, name):
+    # Add a TODO in the manifest if needed to import the new component
+    assert component_directory.startswith(module)
+    component_directory = component_directory[len(module.rsplit("/", 1)[0]) + 1 :]
+
+    with open(f"{module}/__manifest__.py") as file:
+        manifest_content = file.read()
+        assets = (
+            ast.literal_eval(manifest_content)
+            .get("assets", {})
+            .get("web.assets_backend", ())
+        )
+
+    ok_js = False
+    ok_xml = False
+    for asset in assets:
+        asset = glob_translate(asset)
+        if re.match(asset, f"{component_directory}/{name}/{name}.js"):
+            ok_js = True
+        if re.match(asset, f"{component_directory}/{name}/{name}.xml"):
+            ok_xml = True
+
+    if not ok_js or not ok_xml:
+        # Make a syntax error on purpose to be sure we don't forget
+        manifest_content += "\nTODO: include component"
+        manifest_content += "\n" + json.dumps(
+            {"assets": {"web.assets_backend": [f"{component_directory}/**/*"]}},
+            indent=4,
+        )
+        manifest_content += "\n"
+        with open(f"{module}/__manifest__.py", "w") as file:
+            file.write(manifest_content)
+        return True
+    return False
