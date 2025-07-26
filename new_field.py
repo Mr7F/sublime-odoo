@@ -3,19 +3,11 @@ import os
 import json
 import sublime_plugin
 import functools
-import shlex
 import sublime
 import re
 
 
-def find_modules(root_dir):
-    # Use `fdfind` because it's way faster than python on large project
-    cmd = (
-        "timeout 2s fdfind __manifest__.py --absolute-path --base-directory %s --exec dirname {} \; --strip-cwd-prefix"
-        % shlex.quote(root_dir)
-    )
-    paths = os.popen(cmd).read().split("\n")
-    return {path.split("/")[-1]: path for path in paths if path.strip()}
+from .utils import find_modules
 
 
 def list_directories(root_dir):
@@ -25,7 +17,7 @@ def list_directories(root_dir):
 class OdooNewFieldWidgetCommand(sublime_plugin.TextCommand):
     """Command to create a new JS field."""
 
-    def run(self, edit, module, directory, widget_name, is_field=True):
+    def run(self, edit, module, directory, widget_name):
         # Heuristic to split the name (camel case, snake case, using dot, etc)
         next_name = ""
         prev = ""
