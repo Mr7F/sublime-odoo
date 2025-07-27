@@ -1,0 +1,11 @@
+<snippet>
+    <content><![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    $0
+</odoo>
+]]></content>
+    <tabTrigger>odoo-xml-root</tabTrigger>
+    <scope>text.xml</scope>
+    <description>Odoo / XML Root</description>
+</snippet>

@@ -1,0 +1,21 @@
+<snippet>
+    <content><![CDATA[
+<record id="${1/\./_/g}_view_form" model="ir.ui.view">
+    <field name="name">${1:res.partner}.view.form</field>
+    <field name="model">${1:res.partner}</field>
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <form string="${2:${1/^(\w)|(?:\.(\w))/(?1\u$1:)(?2 \u$2:)/g}}">
+            <sheet>
+                <group>
+                    $0
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+]]></content>
+    <tabTrigger>odoo-view-form</tabTrigger>
+    <scope>text.xml</scope>
+    <description>Odoo / View Form</description>
+</snippet>

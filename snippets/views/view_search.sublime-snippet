@@ -1,0 +1,20 @@
+<snippet>
+    <content><![CDATA[
+<record id="${1/\./_/g}_view_search" model="ir.ui.view">
+    <field name="name">${1:res.partner}.view.search</field>
+    <field name="model">${1:res.partner}</field>
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <search string="${2:${1/^(\w)|(?:\.(\w))/(?1\u$1:)(?2 \u$2:)/g}}">
+            <field name="${3:name}"/>$0
+            <group string="Group By">
+                <filter string="${4/^(\w)|(?:_(\w))/(?1\u$1:)(?2 \u$2:)/g}" name="groupby_${4:name}" context="{'group_by': '${4:name}'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+]]></content>
+    <tabTrigger>odoo-view-search</tabTrigger>
+    <scope>text.xml</scope>
+    <description>Odoo / View Search</description>
+</snippet>

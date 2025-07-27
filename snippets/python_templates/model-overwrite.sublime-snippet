@@ -1,0 +1,16 @@
+<snippet>
+    <content><![CDATA[
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+from odoo import _, api, fields, models
+
+
+class ${1/^(\w)|(?:\.(\w))/(?1\u$1:)(?2\u$2:)/g}(models.Model):
+    _${2:inherit} = "${1:res.partner}"
+
+    $0
+]]></content>
+    <tabTrigger>odoo-model-overwrite-template</tabTrigger>
+    <scope>source.python</scope>
+    <description>Odoo / Model Overwrite Template</description>
+</snippet>

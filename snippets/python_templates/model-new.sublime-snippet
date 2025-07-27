@@ -6,11 +6,12 @@ from odoo import _, api, fields, models
 
 
 class ${1/^(\w)|(?:\.(\w))/(?1\u$1:)(?2\u$2:)/g}(models.Model):
-    _${2:inherit} = "${1:res.partner}"
+    _name = "${1:res.partner}"
+    _description = "${1/^(\w)|(?:\.(\w))/(?1\u$1:)(?2 \u$2:)/g}"
 
     $0
 ]]></content>
-    <tabTrigger>odoo-model-template</tabTrigger>
+    <tabTrigger>odoo-model-new-template</tabTrigger>
     <scope>source.python</scope>
-    <description>Odoo / Model</description>
+    <description>Odoo / Model New Template</description>
 </snippet>

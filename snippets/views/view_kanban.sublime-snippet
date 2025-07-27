@@ -1,0 +1,22 @@
+<snippet>
+    <content><![CDATA[
+<record id="${1/\./_/g}_view_kanban" model="ir.ui.view">
+    <field name="name">${1:res.partner}.view.kanban</field>
+    <field name="model">${1:res.partner}</field>
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <kanban string="${2:${1/^(\w)|(?:\.(\w))/(?1\u$1:)(?2 \u$2:)/g}}">
+            <field name="${3:name}"/>
+            <templates>
+                <t t-name="card">
+                    <field name="${3:name}"/>$0
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+]]></content>
+    <tabTrigger>odoo-view-kanban</tabTrigger>
+    <scope>text.xml</scope>
+    <description>Odoo / View Kanban</description>
+</snippet>

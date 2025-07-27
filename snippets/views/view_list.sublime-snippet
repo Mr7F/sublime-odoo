@@ -1,0 +1,17 @@
+<snippet>
+    <content><![CDATA[
+<record id="${1/\./_/g}_view_list" model="ir.ui.view">
+    <field name="name">${1:res.partner}.view.list</field>
+    <field name="model">${1:res.partner}</field>
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+        <list string="${2:${1/^(\w)|(?:\.(\w))/(?1\u$1:)(?2 \u$2:)/g}}">
+            <field name="${3:name}"/>$0
+        </list>
+    </field>
+</record>
+]]></content>
+    <tabTrigger>odoo-view-list</tabTrigger>
+    <scope>text.xml</scope>
+    <description>Odoo / View List</description>
+</snippet>

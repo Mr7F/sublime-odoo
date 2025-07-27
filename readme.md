@@ -1,6 +1,12 @@
 # Sublime - Odoo
 ## Snippets
-Add some snippet for common code
+Add some snippets for common code
+- new model
+- overwrite a model
+- views (form, list, kanban, search, etc)
+- common methods (create, write, etc)
+
+Check the snippet folder to see what's available.
 
 ## Syntax highlighting
 Syntax highlighting for QWeb templates, OWL templates and views.
