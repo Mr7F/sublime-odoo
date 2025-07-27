@@ -21,11 +21,11 @@ It also highlight mail templates and "backend" templates.
 </p>
 
 ## Commands
-Please install `fd-find` to use most of command
+Please install [fd-find](https://github.com/sharkdp/fd) and [ripgrep](https://github.com/BurntSushi/ripgrep) to use most of commands (they are use instead of slow python code to get the list of modules, list of models, etc)
 
-> https://github.com/sharkdp/fd
+> sudo apt install ripgrep fd-find
 
-You can automatically create Python inherit, JS component, etc
+You can automatically create Python inherit, JS component, search a view and overwrite it, etc
 
 Type "Odoo" in the command palette to see what's available.
 > https://youtu.be/lkYhHB83vJ8
@@ -33,4 +33,3 @@ Type "Odoo" in the command palette to see what's available.
 ## TODO
 - find a way to automatically change `__manifest__.py` without reformatting
 - automatically insert the python import at the right place
-- command to overwrite a view (search for a module / model / type)
