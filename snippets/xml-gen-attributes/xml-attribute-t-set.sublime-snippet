@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+t-set="$1"$0
+]]></content>
+    <tabTrigger>t-set=</tabTrigger>
+    <scope>meta.tag.xml entity</scope>
+    <description>T-set</description>
+</snippet>

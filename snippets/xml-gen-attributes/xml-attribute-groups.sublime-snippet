@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+groups="${1:base.group_no_one}"$0
+]]></content>
+    <tabTrigger>groups=</tabTrigger>
+    <scope>meta.tag.xml entity</scope>
+    <description>Groups</description>
+</snippet>

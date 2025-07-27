@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+invisible="${1:1}"$0
+]]></content>
+    <tabTrigger>invisible=</tabTrigger>
+    <scope>meta.tag.xml entity</scope>
+    <description>Invisible</description>
+</snippet>

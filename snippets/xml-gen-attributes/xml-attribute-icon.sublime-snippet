@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+icon="$1"$0
+]]></content>
+    <tabTrigger>icon=</tabTrigger>
+    <scope>meta.tag.xml entity</scope>
+    <description>Icon</description>
+</snippet>

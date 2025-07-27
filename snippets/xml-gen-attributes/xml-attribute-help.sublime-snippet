@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+help="$1"$0
+]]></content>
+    <tabTrigger>help=</tabTrigger>
+    <scope>meta.tag.xml entity</scope>
+    <description>Help</description>
+</snippet>

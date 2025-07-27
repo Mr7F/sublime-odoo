@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+t-else="$1"$0
+]]></content>
+    <tabTrigger>t-else=</tabTrigger>
+    <scope>meta.tag.xml entity</scope>
+    <description>T-else</description>
+</snippet>
