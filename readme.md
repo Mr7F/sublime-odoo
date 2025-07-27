@@ -39,3 +39,4 @@ Type "Odoo" in the command palette to see what's available.
 ## TODO
 - find a way to automatically change `__manifest__.py` without reformatting
 - automatically insert the python import at the right place
+- show completion for model in `env['...']`

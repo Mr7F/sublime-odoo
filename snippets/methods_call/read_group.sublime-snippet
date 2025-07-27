@@ -1,8 +1,0 @@
-<snippet>
-    <content><![CDATA[
-._read_group(domain=[$1], groupby=["${2:parent_id}"])
-]]></content>
-    <tabTrigger>._read_group</tabTrigger>
-    <scope>source.python</scope>
-    <description>Odoo / _read_group</description>
-</snippet>

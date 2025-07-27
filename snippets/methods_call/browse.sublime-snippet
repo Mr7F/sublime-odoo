@@ -1,8 +1,0 @@
-<snippet>
-    <content><![CDATA[
-.browse($1)
-]]></content>
-    <tabTrigger>.browse</tabTrigger>
-    <scope>source.python</scope>
-    <description>Odoo / browse()</description>
-</snippet>

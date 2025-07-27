@@ -1,8 +1,0 @@
-<snippet>
-    <content><![CDATA[
-.create({$1})
-]]></content>
-    <tabTrigger>.create</tabTrigger>
-    <scope>source.python</scope>
-    <description>Odoo / create({})</description>
-</snippet>

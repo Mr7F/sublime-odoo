@@ -1,8 +1,0 @@
-<snippet>
-    <content><![CDATA[
-.search($1)
-]]></content>
-    <tabTrigger>.search</tabTrigger>
-    <scope>source.python</scope>
-    <description>Odoo / search()</description>
-</snippet>

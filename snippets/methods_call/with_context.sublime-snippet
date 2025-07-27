@@ -1,8 +1,0 @@
-<snippet>
-    <content><![CDATA[
-.with_context($1)
-]]></content>
-    <tabTrigger>.with_context</tabTrigger>
-    <scope>source.python</scope>
-    <description>Odoo / with_context()</description>
-</snippet>
