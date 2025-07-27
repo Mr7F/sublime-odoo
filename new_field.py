@@ -292,6 +292,9 @@ def import_in_manifest(module, component_directory, name):
     ok_js = False
     ok_xml = False
     for asset in assets:
+        if not isinstance(asset, str):
+            continue
+
         asset = glob_translate(asset)
         if re.match(asset, f"{component_directory}/{name}/{name}.js"):
             ok_js = True
