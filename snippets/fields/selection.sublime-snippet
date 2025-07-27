@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+fields.Selection([("${1:option}", "${2:${1/^(\w)|(?:\_(\w))/(?1\u$1:)(?2 \u$2:)/g}}")], string="${3:Name}")
+]]></content>
+    <tabTrigger>fields.Selection</tabTrigger>
+    <scope>source.python</scope>
+    <description>Odoo / Field Selection</description>
+</snippet>

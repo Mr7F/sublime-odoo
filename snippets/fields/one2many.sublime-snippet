@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+fields.One2many("${1:res.partner}", "${2:record_id}", string="${3:Contacts}")
+]]></content>
+    <tabTrigger>fields.One2many</tabTrigger>
+    <scope>source.python</scope>
+    <description>Odoo / Field One2many</description>
+</snippet>

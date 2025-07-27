@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+.filtered($1)
+]]></content>
+    <tabTrigger>.filtered</tabTrigger>
+    <scope>source.python</scope>
+    <description>Odoo / filtered({})</description>
+</snippet>

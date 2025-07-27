@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+fields.Datetime("${1:Name}")
+]]></content>
+    <tabTrigger>fields.Datetime</tabTrigger>
+    <scope>source.python</scope>
+    <description>Odoo / Field Datetime</description>
+</snippet>

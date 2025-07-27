@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+fields.Text("${1:Name}")
+]]></content>
+    <tabTrigger>fields.Text</tabTrigger>
+    <scope>source.python</scope>
+    <description>Odoo / Field Text</description>
+</snippet>
