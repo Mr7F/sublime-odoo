@@ -32,6 +32,9 @@ Please install [fd-find](https://github.com/sharkdp/fd) and [ripgrep](https://gi
 > sudo apt install ripgrep fd-find
 
 You can automatically create Python inherit, JS component, search a view and overwrite it, etc
+<p align="center">
+  <img src="img/demo_view.gif">
+</p>
 
 Type "Odoo" in the command palette to see what's available.
 > https://youtu.be/lkYhHB83vJ8
