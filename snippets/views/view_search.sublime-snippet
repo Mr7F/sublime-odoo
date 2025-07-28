@@ -15,6 +15,6 @@
 </record>
 ]]></content>
     <tabTrigger>odoo-view-search</tabTrigger>
-    <scope>text.xml</scope>
+    <scope>text.xml - meta.tag</scope>
     <description>Odoo / View Search</description>
 </snippet>

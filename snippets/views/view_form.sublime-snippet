@@ -16,6 +16,6 @@
 </record>
 ]]></content>
     <tabTrigger>odoo-view-form</tabTrigger>
-    <scope>text.xml</scope>
+    <scope>text.xml - meta.tag</scope>
     <description>Odoo / View Form</description>
 </snippet>

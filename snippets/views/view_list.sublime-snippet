@@ -12,6 +12,6 @@
 </record>
 ]]></content>
     <tabTrigger>odoo-view-list</tabTrigger>
-    <scope>text.xml</scope>
+    <scope>text.xml - meta.tag</scope>
     <description>Odoo / View List</description>
 </snippet>

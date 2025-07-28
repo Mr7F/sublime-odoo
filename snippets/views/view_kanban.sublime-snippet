@@ -17,6 +17,6 @@
 </record>
 ]]></content>
     <tabTrigger>odoo-view-kanban</tabTrigger>
-    <scope>text.xml</scope>
+    <scope>text.xml - meta.tag</scope>
     <description>Odoo / View Kanban</description>
 </snippet>

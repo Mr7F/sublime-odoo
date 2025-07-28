@@ -3,6 +3,6 @@
 options="{'${1:no_create}': ${2:True}}"$0
 ]]></content>
     <tabTrigger>options=</tabTrigger>
-    <scope>meta.tag.xml</scope>
+    <scope>meta.tag.xml entity</scope>
     <description>Odoo Options</description>
 </snippet>

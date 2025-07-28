@@ -6,6 +6,6 @@
 </odoo>
 ]]></content>
     <tabTrigger>odoo-xml-root</tabTrigger>
-    <scope>text.xml</scope>
+    <scope>text.xml - meta.tag</scope>
     <description>Odoo / XML Root</description>
 </snippet>
