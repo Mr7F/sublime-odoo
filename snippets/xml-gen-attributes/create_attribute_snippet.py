@@ -21,7 +21,7 @@ template_default = """<snippet>
 """
 
 if __name__ == "__main__":
-    os.system("rm ./*.sublime-snippet")
+    os.system("rm ./xml-attribute-*.sublime-snippet")
 
     attributes = [
         "name",
