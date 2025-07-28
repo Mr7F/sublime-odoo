@@ -36,7 +36,11 @@ You can automatically create Python inherit, JS component, search a view and ove
 Type "Odoo" in the command palette to see what's available.
 > https://youtu.be/lkYhHB83vJ8
 
+## Auto-complete
+<p align="center">
+  <img src="img/demo_env.gif">
+</p>
+
 ## TODO
 - find a way to automatically change `__manifest__.py` without reformatting
 - automatically insert the python import at the right place
-- show completion for model in `env['...']`
