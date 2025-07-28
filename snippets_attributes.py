@@ -5,43 +5,43 @@ import sublime_plugin
 
 snippets = [
     (
-        """._read_group(domain=[$1], groupby=["${2:parent_id}"])""",
-        "._read_group",
+        """_read_group(domain=[$1], groupby=["${2:parent_id}"])""",
+        "_read_group",
         "Odoo / _read_group",
     ),
     (
-        """.browse($1)""",
-        ".browse",
+        """browse($1)""",
+        "browse",
         "Odoo / browse",
     ),
     (
-        """.create({$1})""",
-        ".create",
+        """create({$1})""",
+        "create",
         "Odoo / create({})",
     ),
     (
-        """.env["$1"]""",
-        ".env",
+        """env["$1"]""",
+        "env",
         "Odoo / env[]",
     ),
     (
-        """.filtered($1)""",
-        ".filtered",
+        """filtered($1)""",
+        "filtered",
         "Odoo / filtered({})",
     ),
     (
-        """.search($1)""",
-        ".search",
+        """search($1)""",
+        "search",
         "Odoo / search()",
     ),
     (
-        """.with_context($1)""",
-        ".with_context",
+        """with_context($1)""",
+        "with_context",
         "Odoo / with_context()",
     ),
     (
-        """.write({$1})""",
-        ".write",
+        """write({$1})""",
+        "write",
         "Odoo / write({})",
     ),
 ]
@@ -72,7 +72,10 @@ class SnippetPythonAttributeEventListener(sublime_plugin.EventListener):
             if obj_pos.a < 0:
                 return None
 
-            if not view.match_selector(obj_pos.a, "meta.path"):
+            if not view.match_selector(
+                obj_pos.a,
+                "meta.path | punctuation.section.brackets.end.python",
+            ):
                 return None
 
         return [
