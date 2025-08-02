@@ -13,7 +13,7 @@ from . import models
 
 TEMPLATE_INIT_MODELS = """# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from .%(snake_name)s import *
+from . import %(snake_name)s
 """
 
 # Inserted as a snippet to be able to change `inherit` to `name` if needed
@@ -66,7 +66,7 @@ class OdooNewModelInheritCommand(sublime_plugin.TextCommand):
 
             if f"from . import {snake_name}\n" not in data:
                 with open(f"{module}/models/__init__.py", "w") as file:
-                    file.write(data.strip() + "\n" + f"from .{snake_name} import *\n")
+                    file.write(data.strip() + "\n" + f"from . import {snake_name}\n")
                 to_open.append(f"{module}/models/__init__.py")
 
         views = [

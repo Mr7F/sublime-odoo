@@ -35,16 +35,9 @@ class OdooNewFieldWidgetCommand(sublime_plugin.TextCommand):
         module_name = module.split("/")[-1]
 
         os.makedirs(f"{directory}/{snake_name}", exist_ok=True)
+
         with open(f"{directory}/{snake_name}/{snake_name}.js", "w") as file:
-            file.write(
-                DEFAULT_JS_TEMPLATE
-                % dict(
-                    camel_name=camel_name,
-                    small_camel_name=small_camel_name,
-                    module=module_name,
-                    snake_name=snake_name,
-                ),
-            )
+            file.write("")
 
         with open(f"{directory}/{snake_name}/{snake_name}.xml", "w") as file:
             file.write(
@@ -57,28 +50,37 @@ class OdooNewFieldWidgetCommand(sublime_plugin.TextCommand):
                 ),
             )
 
-        view_js = self.view.window().open_file(
-            f"{directory}/{snake_name}/{snake_name}.js",
-            flags=64,
-        )
         self.view.window().open_file(
             f"{directory}/{snake_name}/{snake_name}.xml",
             flags=64,
         )
 
         if import_in_manifest(module, directory, snake_name):
-            view = self.view.window().open_file(
+            self.view.window().open_file(
                 f"{module}/__manifest__.py",
                 flags=64,
             )
-            self.view.window().focus_view(view)
+        view_js = self.view.window().open_file(
+            f"{directory}/{snake_name}/{snake_name}.js",
+            flags=64,
+        )
+        self.view.window().focus_view(view_js)
 
-            def _scroll_manifest():
-                view.show(view.size())
+        def _scroll_manifest():
+            view_js.run_command(
+                "insert_snippet",
+                {
+                    "contents": DEFAULT_JS_TEMPLATE
+                    % dict(
+                        camel_name=camel_name,
+                        small_camel_name=small_camel_name,
+                        module=module_name,
+                        snake_name=snake_name,
+                    )
+                },
+            )
 
-            sublime.set_timeout(_scroll_manifest, 100)
-        else:
-            self.view.window().focus_view(view_js)
+        sublime.set_timeout(_scroll_manifest, 100)
 
     def input(self, args):
         self.modules = {}
@@ -219,16 +221,16 @@ export class %(camel_name)s extends Component {
     static template = "%(module)s.%(camel_name)s";
     static props = {
         ...standardFieldProps,
-        __TEST_PROPS__: { type: Boolean, optional: true },
+        ${1:name}: { ${2:type: String, optional: true} },
     };
-    static components = {
+    static components = {${3:
         Dropdown,
         DropdownItem,
-    };
+    }};
 
     setup() {
         this.notification = useService("notification");
-        this.state = useState({});
+        this.state = useState({});$0
     }
 }
 
@@ -302,14 +304,49 @@ def import_in_manifest(module, component_directory, name):
             ok_xml = True
 
     if not ok_js or not ok_xml:
-        # Make a syntax error on purpose to be sure we don't forget
-        manifest_content += "\nTODO: include component"
-        manifest_content += "\n" + json.dumps(
-            {"assets": {"web.assets_backend": [f"{component_directory}/**/*"]}},
-            indent=4,
-        )
-        manifest_content += "\n"
         with open(f"{module}/__manifest__.py", "w") as file:
-            file.write(manifest_content)
+            print(
+                _patch_manifest(
+                    manifest_content,
+                    to_add=f"{component_directory}/**/*",
+                )
+            )
+            file.write(
+                _patch_manifest(
+                    manifest_content,
+                    to_add=f"{component_directory}/**/*",
+                )
+            )
         return True
     return False
+
+
+def _patch_manifest(data, to_add):
+    to_add = to_add.replace("'", "").replace('"', "")
+    quote = "'" if data.count("'") > data.count('"') else '"'
+    to_add = f"'{to_add}',"
+
+    if m := re.search(r"(\s*)('|\")web\.assets_backend(\2)\s*:\s*\[", data):
+        end = m.end()
+        to_add = "    " + to_add.replace("'", quote)
+        return data[:end] + m.groups()[0] + to_add + data[end:]
+
+    if m := re.search(r"(\s*)('|\")assets(\2)\s*:\s*\{", data):
+        end = m.end()
+        to_add = f"""
+'web.assets_backend': [
+    {to_add}
+],""".replace("\n", "\n" + "    " * 2).replace("'", quote)
+        return data[:end] + to_add + data[end:]
+
+    if m := re.search(r"\n}", data):
+        start = m.start()
+        to_add = f"""
+'assets': {{
+    'web.assets_backend': [
+        {to_add}
+    ],
+}},""".replace("\n", "\n" + "    ").replace("'", quote)
+        return data[:start] + to_add + data[start:]
+
+    return data
