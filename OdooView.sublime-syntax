@@ -108,7 +108,11 @@ contexts:
   # attribute parsing
   # -----------------------------------------------------------------------
 
-  qweb-directive:  # `t-att` attribute
+  qweb-directive:
+    - match: (?i:(id))
+      scope: entity.other.attribute-name
+      push: qweb-symbols-assignment
+    # `t-att` attribute
     - match: (?i:(t-name|t-set-slot|t-slot-scope|t-call(-{{owl_attribute_charset}}+)?|t-inherit({{owl_attribute_charset}}*))|t-ref)
       scope: entity.other.attribute-name
       push: tag-else-pop
@@ -168,7 +172,7 @@ contexts:
           0: punctuation.definition.string.begin.qweb
         pop: 1
         embed: qweb-attf-string
-        embed_scope: meta.string.owl
+        embed_scope: meta.string.qweb
         escape: \"
         escape_captures:
           0: punctuation.definition.string.end.qweb
@@ -177,7 +181,7 @@ contexts:
           0: punctuation.definition.string.begin.qweb
         pop: 1
         embed: qweb-attf-string
-        embed_scope: meta.string.owl
+        embed_scope: meta.string.qweb
         escape: \'
         escape_captures:
           0: punctuation.definition.string.end.qweb
@@ -187,18 +191,53 @@ contexts:
     - meta_scope: string.quoted.double.qweb-attf
     - match: \{\{
       captures:
-        0: punctuation.section.interpolation.begin.owl
+        0: punctuation.section.interpolation.begin.qweb
       embed: scope:source.python
       embed_scope: source.python
       escape: \}\}
       escape_captures:
-        0: punctuation.section.interpolation.end.owl
+        0: punctuation.section.interpolation.end.qweb
     - meta_scope: string.quoted.double.qweb-attf
     - match: '#\{'
       captures:
-        0: punctuation.section.interpolation.begin.owl
+        0: punctuation.section.interpolation.begin.qweb
       embed: scope:source.python
       embed_scope: source.python
       escape: \}
       escape_captures:
-        0: punctuation.section.interpolation.end.owl
+        0: punctuation.section.interpolation.end.qweb
+
+  # -----------------------------------------------------------------------
+  # Attribute that should be added in symbols list
+  # -----------------------------------------------------------------------
+
+  qweb-symbols-assignment:
+    - meta_content_scope: meta.directive.qweb
+    - match: =
+      scope: meta.directive.qweb punctuation.separator.key-value.qweb
+      set: qweb-symbols-attribute
+    - include: tag-else-pop
+
+  qweb-symbols-attribute:
+      - match: \"
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: qweb-attribute-string
+        embed_scope: meta.string.qweb qweb.symbols
+        escape: \"
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+      - match: \'
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: qweb-attribute-string
+        embed_scope: meta.string.qweb qweb.symbols
+        escape: \'
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+      - include: tag-else-pop
+
+  qweb-attribute-string:
+    - meta_scope: string.quoted.double.qweb

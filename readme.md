@@ -26,6 +26,11 @@ It also highlight mail templates and "backend" templates.
   <img src="img/demo_template.png">
 </p>
 
+With this syntax highlighting comes the symbols, you can just to view / component template with `ctrl+r` / `ctrl+shift+r`
+<p align="center">
+  <img src="img/demo_symbols.gif">
+</p>
+
 ## Commands
 Please install [fd-find](https://github.com/sharkdp/fd) and [ripgrep](https://github.com/BurntSushi/ripgrep) to use most of commands (they are use instead of slow python code to get the list of modules, list of models, etc)
 

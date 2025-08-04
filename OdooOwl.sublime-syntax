@@ -22,7 +22,11 @@ contexts:
     - meta_prepend: true
     - include: owl-directive
 
-  owl-directive:  # `t-att` attribute
+  owl-directive:
+    - match: (?i:(t-name))
+      scope: entity.other.attribute-name
+      push: owl-symbols-assignment
+    # `t-att` attribute
     - match: (?i:(t-name|t-set-slot|t-slot-scope|t-call|t-inherit({{owl_attribute_charset}}*))|t-ref)
       scope: entity.other.attribute-name
       push: tag-else-pop
@@ -151,3 +155,38 @@ contexts:
     - match: (?i:{{owl_attribute_charset}}+)
       scope: entity.other.attribute-name
       push: owl-directive-assignment
+
+  # -----------------------------------------------------------------------
+  # Attribute that should be added in symbols list
+  # -----------------------------------------------------------------------
+
+  owl-symbols-assignment:
+    - meta_content_scope: meta.directive.owl
+    - match: =
+      scope: meta.directive.owl punctuation.separator.key-value.owl
+      set: owl-symbols-attribute
+    - include: tag-else-pop
+
+  owl-symbols-attribute:
+      - match: \"
+        captures:
+          0: punctuation.definition.string.begin.owl
+        pop: 1
+        embed: owl-attribute-string
+        embed_scope: meta.string.owl owl.symbols
+        escape: \"
+        escape_captures:
+          0: punctuation.definition.string.end.owl
+      - match: \'
+        captures:
+          0: punctuation.definition.string.begin.owl
+        pop: 1
+        embed: owl-attribute-string
+        embed_scope: meta.string.owl owl.symbols
+        escape: \'
+        escape_captures:
+          0: punctuation.definition.string.end.owl
+      - include: tag-else-pop
+
+  owl-attribute-string:
+    - meta_scope: string.quoted.double.owl
