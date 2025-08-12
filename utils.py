@@ -5,12 +5,10 @@ import xml.etree.ElementTree as ET
 
 
 def find_modules(root_dir):
-    # Use `fdfind` because it's way faster than python on large project
-    cmd = (
-        "timeout 2s fdfind __manifest__.py --absolute-path --base-directory %s --exec dirname {} \; --strip-cwd-prefix"
-        % shlex.quote(root_dir)
-    )
+    # Use `ripgrep` because it's way faster than python on large project
+    cmd = "rg --files --glob '**/__manifest__.py' %s" % shlex.quote(root_dir)
     paths = os.popen(cmd).read().split("\n")
+    paths = (p.strip().replace("/__manifest__.py", "") for p in paths if p.strip())
     return {path.split("/")[-1]: path for path in paths if path.strip()}
 
 

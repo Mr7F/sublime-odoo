@@ -32,9 +32,9 @@ With this syntax highlighting comes the symbols, you can just to view / componen
 </p>
 
 ## Commands
-Please install [fd-find](https://github.com/sharkdp/fd) and [ripgrep](https://github.com/BurntSushi/ripgrep) to use most of commands (they are use instead of slow python code to get the list of modules, list of models, etc)
+Please install [ripgrep](https://github.com/BurntSushi/ripgrep) to use most of commands (they are use instead of slow python code to get the list of modules, list of models, etc)
 
-> sudo apt install ripgrep fd-find
+> sudo apt install ripgrep
 
 You can automatically create Python inherit, JS component, search a view and overwrite it, etc
 <p align="center">
