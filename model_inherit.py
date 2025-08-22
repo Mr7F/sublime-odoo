@@ -40,6 +40,7 @@ class OdooNewModelInheritCommand(sublime_plugin.TextCommand):
             sublime.error_message("The models already exists")
             return
 
+        os.makedirs(f"{module}/models", exist_ok=True)
         to_open = [f"{module}/models/{snake_name}.py"]
         model_content = TEMPLATE_MODEL % {
             "camel_name": camel_name,
@@ -53,20 +54,33 @@ class OdooNewModelInheritCommand(sublime_plugin.TextCommand):
                 file.write(TEMPLATE_INIT_MODULE)
             to_open.append(f"{module}/__init__.py")
 
-        os.makedirs(f"{module}/models", exist_ok=True)
-
         if not os.path.isfile(f"{module}/models/__init__.py"):
             with open(f"{module}/models/__init__.py", "w") as file:
-                file.write(TEMPLATE_INIT_MODELS % snake_name)
+                file.write(TEMPLATE_INIT_MODELS % {"snake_name": snake_name})
 
             to_open.append(f"{module}/models/__init__.py")
         else:
             with open(f"{module}/models/__init__.py") as file:
                 data = file.read()
 
-            if f"from . import {snake_name}\n" not in data:
+            to_add = f"from . import {snake_name}"
+            if to_add + "\n" not in data:
+                lines = data.split("\n")
+                idx = next(
+                    (
+                        i
+                        for i, l in enumerate(lines)
+                        if l.startswith("from . import ") and l > to_add
+                    ),
+                    None,
+                )
+                if idx is None:
+                    data += to_add + "\n"
+                else:
+                    data = "\n".join(lines[:idx] + [to_add] + lines[idx:])
+
                 with open(f"{module}/models/__init__.py", "w") as file:
-                    file.write(data.strip() + "\n" + f"from . import {snake_name}\n")
+                    file.write(data)
                 to_open.append(f"{module}/models/__init__.py")
 
         views = [
@@ -83,7 +97,6 @@ class OdooNewModelInheritCommand(sublime_plugin.TextCommand):
         self.modules = {}
         for folder in self.view.window().folders():
             self.modules.update(find_modules(folder))
-
 
         current_file_name = self.view.file_name()
         current_module = next(
