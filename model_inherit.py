@@ -4,17 +4,7 @@ import functools
 import sublime
 import re
 
-from .utils import find_modules
-
-TEMPLATE_INIT_MODULE = """# Part of Odoo. See LICENSE file for full copyright and licensing details.
-
-from . import models
-"""
-
-TEMPLATE_INIT_MODELS = """# Part of Odoo. See LICENSE file for full copyright and licensing details.
-
-from . import %(snake_name)s
-"""
+from .utils import find_modules, add_python_import
 
 # Inserted as a snippet to be able to change `inherit` to `name` if needed
 TEMPLATE_MODEL = """# Part of Odoo. See LICENSE file for full copyright and licensing details.
@@ -49,39 +39,14 @@ class OdooNewModelInheritCommand(sublime_plugin.TextCommand):
         with open(f"{module}/models/{snake_name}.py", "w") as file:
             file.write("")
 
-        if not os.path.isfile(f"{module}/__init__.py"):
-            with open(f"{module}/__init__.py", "w") as file:
-                file.write(TEMPLATE_INIT_MODULE)
+        if add_python_import(f"{module}/__init__.py", "from . import models"):
             to_open.append(f"{module}/__init__.py")
 
-        if not os.path.isfile(f"{module}/models/__init__.py"):
-            with open(f"{module}/models/__init__.py", "w") as file:
-                file.write(TEMPLATE_INIT_MODELS % {"snake_name": snake_name})
-
+        if add_python_import(
+            f"{module}/models/__init__.py",
+            f"from . import {snake_name}",
+        ):
             to_open.append(f"{module}/models/__init__.py")
-        else:
-            with open(f"{module}/models/__init__.py") as file:
-                data = file.read()
-
-            to_add = f"from . import {snake_name}"
-            if to_add + "\n" not in data:
-                lines = data.split("\n")
-                idx = next(
-                    (
-                        i
-                        for i, l in enumerate(lines)
-                        if l.startswith("from . import ") and l > to_add
-                    ),
-                    None,
-                )
-                if idx is None:
-                    data += to_add + "\n"
-                else:
-                    data = "\n".join(lines[:idx] + [to_add] + lines[idx:])
-
-                with open(f"{module}/models/__init__.py", "w") as file:
-                    file.write(data)
-                to_open.append(f"{module}/models/__init__.py")
 
         views = [
             self.view.window().open_file(file_name, flags=64) for file_name in to_open

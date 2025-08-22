@@ -95,3 +95,43 @@ def get_views(root_dir, model):
                 views["map"].append(view_id)
 
     return views
+
+
+def add_python_import(filename, import_line):
+    """Heuristic that add an import, and try to sort it.
+
+    Return True if the file has been modified.
+    """
+    if not os.path.isfile(filename):
+        with open(filename, "w") as file:
+            file.write(TEMPLATE_INIT_MODELS % {"import": import_line})
+        return True
+
+    with open(filename) as file:
+        data = file.read()
+
+    if import_line + "\n" not in data:
+        lines = data.split("\n")
+        idx = next(
+            (
+                i
+                for i, l in enumerate(lines)
+                if l.startswith(import_line[:5]) and l > import_line
+            ),
+            None,
+        )
+        if idx is None:
+            data += import_line + "\n"
+        else:
+            data = "\n".join(lines[:idx] + [import_line] + lines[idx:])
+
+        with open(filename, "w") as file:
+            file.write(data)
+        return True
+    return False
+
+
+TEMPLATE_INIT_MODELS = """# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+%(import)s
+"""
