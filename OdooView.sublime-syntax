@@ -64,6 +64,7 @@ contexts:
     - meta_prepend: true
     - include: owl-component-tag
     - include: odoo-view-special-tag
+    - include: t-tag-with-tcall
 
   # Special tags that contain code
   odoo-view-special-tag:
@@ -103,6 +104,41 @@ contexts:
           1: punctuation.definition.string.end.qweb
           2: entity.name.tag.localname.xml
           3: punctuation.definition.string.end.qweb
+
+  # -----------------------------------------------------------------------
+  # <t ... t-call="..."> : `t` tag with a `t-call` inside of it
+  # -----------------------------------------------------------------------
+
+  # all attributes are python code, except
+  # - t-call: name
+  # - .f - .translate: string format
+
+  t-tag-with-tcall:
+    - match: (<)(t)(?=[^>]*\bt-call\b)
+      captures:
+        1: punctuation.definition.tag.begin.opening.xml
+        2: entity.name.tag.localname.xml
+      push:
+        - meta_scope: meta.tag.opening.xml
+        - match: (/?>)
+          captures:
+            1: punctuation.definition.tag.end.opening.xml
+          pop: 1
+        - include: t-tag-with-tcall-attribute
+
+  t-tag-with-tcall-attribute:
+      # t-call -> name
+    - match: (?i:(t-call(-{{owl_attribute_charset}}+)?))
+      scope: entity.other.attribute-name
+      push: qweb-symbols-assignment
+      # name.f - name.translate -> string format
+    - match: (?i:{{owl_attribute_charset}}+(\.f|\.translate))
+      scope: entity.other.attribute-name
+      push: qweb-attf-assignment
+      # any other -> python
+    - match: (?i:{{owl_attribute_charset}}+)
+      scope: entity.other.attribute-name
+      push: qweb-directive-assignment
 
   # -----------------------------------------------------------------------
   # attribute parsing
