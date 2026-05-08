@@ -5,11 +5,25 @@ import xml.etree.ElementTree as ET
 
 
 def find_modules(root_dir):
-    # Use `ripgrep` because it's way faster than python on large project
+    # Use ripgrep because it's way faster than python on large project
     cmd = "rg --files --glob '**/__manifest__.py' %s" % shlex.quote(root_dir)
     paths = os.popen(cmd).read().split("\n")
     paths = (p.strip().replace("/__manifest__.py", "") for p in paths if p.strip())
-    return {path.split("/")[-1]: path for path in paths if path.strip()}
+
+    modules = {}
+    for path in paths:
+        if path.strip():
+            module = path.split("/")[-1]
+            module_i = module
+            i = 1
+            while module_i in modules:
+                i += 1
+                module_i = f"{module} ({i})"
+
+            if "social" in module_i:
+                print(module_i)
+            modules[module_i] = path
+    return modules
 
 
 def get_models(root_dir):
