@@ -1,0 +1,69 @@
+# SYNTAX TEST "Packages/sublime-odoo/OdooView.sublime-syntax"
+
+<a t-att-href="access_urls.get(documents)" t-if='record and not record.is_cancelled'>Get files</a>
+#             ^ punctuation.definition.string.begin.qweb
+#              ^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.qweb source.python
+#                                        ^ punctuation.definition.string.end.qweb
+#                                               ^ punctuation.definition.string.begin.qweb
+#                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.single.qweb source.python
+#                                                                                  ^ punctuation.definition.string.end.qweb
+
+<a t-attf-style="background: {{ user.company_id.email_secondary_color or '#875A7B' }}; color: #{user.company_id.email_primary_color or '#FFFFFF'};"/>
+#                ^^^^^^^^^^^^ string.quoted.double.qweb-attf
+#                            ^^ punctuation.section.interpolation.begin.qweb
+#                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+#                                                                        ^^^^^^^^^ source.python string.quoted.single.python
+#                                                                                  ^^ punctuation.section.interpolation.end.qweb
+#                                                                                    ^^^^^^^^^ string.quoted.double.qweb-attf
+#                                                                                             ^^ punctuation.section.interpolation.begin.qweb
+#                                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+#                                                                                                                                      ^^^^^^^^^ source.python string.quoted.single.python
+#                                                                                                                                               ^ punctuation.section.interpolation.end.qweb
+
+<field name="partner_id" domain="[('is_company', '=', True), ('name', 'ilike', context.get('search'))]" context="{'default_parent_id': active_id}"/>
+#                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+#                                                                              ^^^^^^^^^^^^^^^^^^^^^ source.python
+#                                 ^^^^^^^^^^^^^^^^^^^^^^^^ meta.sequence.tuple.python
+#                                                     ^^^^ meta.sequence.tuple.python constant.language.boolean.true.python
+#                                                                                          ^^^^^^^^ meta.string.python
+#                                                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+
+<field name="domain">[('id', 'in', record.ids)]</field>
+#                    ^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+#                                                ^^^^^ entity.name.tag.localname.xml
+
+<t t-call="website.layout" t-set="page_name" body_class.f="o_#{page_name} {{ 'x' if debug else '' }}">
+#          ^^^^^^^^^^^^^^ qweb.symbols string.quoted.double.qweb - source.python
+#                                 ^^^^^^^^^ string.quoted.double.qweb source.python
+#                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.qweb-attf
+#                                                            ^^ punctuation.section.interpolation.begin.qweb
+#                                                              ^^^^^^^^^ source.python
+#                                                                         ^^ punctuation.section.interpolation.begin.qweb
+#                                                                                   ^^^^^ source.python
+#                                                                                                 ^^ punctuation.section.interpolation.end.qweb
+</t>
+
+<a t-attf-style="
+    background-color: {{ user.company_id.email_secondary_color or '#875A7B' }};
+#   ^^^^^^^^^^^^^^^^^^ string.quoted.double.qweb-attf
+#                     ^^ punctuation.section.interpolation.begin.qweb
+#                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+#                                                                 ^^^^^^^^^ source.python string.quoted.single.python
+#                                                                           ^^ punctuation.section.interpolation.end.qweb
+    color: {{ user.company_id.email_primary_color or '#FFFFFF' }};
+#   ^^^^^^^ string.quoted.double.qweb-attf
+#          ^^ punctuation.section.interpolation.begin.qweb
+#             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+#                                                    ^^^^^^^^^ source.python string.quoted.single.python
+#                                                              ^^ punctuation.section.interpolation.end.qweb
+  "/>
+# ^ punctuation.definition.string.end.qweb
+<div t-att-test="True"/>
+#                ^^^^ source.python.embedded.qweb constant.language.boolean.true.python
+
+<templates>
+    <t t-if="props.active and state.count > 0" t-attf-class="btn {{ props.name }}"/>
+#            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ text.xml.owl source.js - source.python
+#                                                            ^^^^ text.xml.owl string.quoted.double.owl-attf
+#                                                                   ^^^^^^^^^^ text.xml.owl source.js - source.python
+</templates>

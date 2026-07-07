@@ -175,21 +175,31 @@ contexts:
         captures:
           0: punctuation.definition.string.begin.qweb
         pop: 1
-        embed: scope:source.python
-        embed_scope: source.python
+        embed: qweb-directive-double-python-string
         escape: \"
         escape_captures:
           0: punctuation.definition.string.end.qweb
+
       - match: \'
         captures:
           0: punctuation.definition.string.begin.qweb
         pop: 1
-        embed: scope:source.python
-        embed_scope: source.python
+        embed: qweb-directive-single-python-string
         escape: \'
         escape_captures:
           0: punctuation.definition.string.end.qweb
+
       - include: tag-else-pop
+
+  qweb-directive-double-python-string:
+    # wrapper just to get the "meta.string.qweb" in the scope
+    - meta_scope: meta.string.qweb string.quoted.double.qweb source.python.embedded.qweb
+    - include: scope:source.python
+
+  qweb-directive-single-python-string:
+    # wrapper just to get the "meta.string.qweb" in the scope
+    - meta_scope: meta.string.qweb string.quoted.single.qweb source.python.embedded.qweb
+    - include: scope:source.python
 
   # -----------------------------------------------------------------------
   # `t-attf-`

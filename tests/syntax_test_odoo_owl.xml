@@ -1,0 +1,66 @@
+# SYNTAX TEST "Packages/sublime-odoo/OdooOwl.sublime-syntax"
+
+<t t-if="props.active and state.count > 0" t-esc='record.display_name'/>
+#       ^ punctuation.definition.string.begin.owl
+#        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.owl source.js
+#                                        ^ punctuation.definition.string.end.owl
+#                                                ^ punctuation.definition.string.begin.owl
+#                                                 ^^^^^^^^^^^^^^^^^^^ string.quoted.single.owl source.js
+#                                                                    ^ punctuation.definition.string.end.owl
+
+<t t-att-class="{ active: props.active, disabled: !props.enabled }"/>
+#               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.owl source.js
+#                         ^^^^^^^^^^^^ string.quoted.double.owl source.js
+#                                                 ^^^^^^^^^^^^^^ string.quoted.double.owl source.js
+
+<t t-attf-class="btn {{ props.active ? 'active' : '' }} extra #{state.extraClass}"/>
+#                ^^^^ string.quoted.double.owl-attf
+#                    ^^ punctuation.section.interpolation.begin.owl
+#                       ^^^^^^^^^^^^ source.js
+#                                      ^^^^^^^^ source.js string.quoted.single.js
+#                                                    ^^ punctuation.section.interpolation.end.owl
+#                                                       ^^^^^^ string.quoted.double.owl-attf
+#                                                             ^^ punctuation.section.interpolation.begin.owl
+#                                                               ^^^^^^^^^^^^^^^^ source.js
+#                                                                               ^ punctuation.section.interpolation.end.owl
+
+<t t-name="my_module.Component"/>
+#          ^^^^^^^^^^^^^^^^^^^ owl.symbols string.quoted.double.owl - source.js
+
+<Dialog title="props.title" disabled="!props.canOpen" size="lg" title.translate="Open menu"/>
+#              ^^^^^^^^^^^ string.quoted.double.owl source.js
+#                                     ^^^^^^^^^^^^^^ string.quoted.double.owl source.js
+#                                                           ^^ string.quoted.double.xml - source.js
+#                                                                                ^^^^^^^^^ string.quoted.double.xml - source.js
+
+<t t-att-class="
+    props.active
+#   ^^^^^^^^^^^^ string.quoted.double.owl source.js
+        ? 'active'
+#       ^ string.quoted.double.owl source.js
+#         ^^^^^^^^ string.quoted.double.owl source.js string.quoted.single.js
+        : ''
+#       ^ string.quoted.double.owl source.js
+#         ^^ string.quoted.double.owl source.js string.quoted.single.js
+  "/>
+# ^ punctuation.definition.string.end.owl
+
+
+  <SelectMenu t-if="choices"
+#  ^^^^^^^^^^ text.xml.owl meta.tag.xml entity.name.tag.localname.xml
+    t-props="this.props.childProps"
+#   ^^^^^^^ text.xml.owl meta.tag.xml entity.other.attribute-name
+#          ^ punctuation.separator.key-value.owl
+#           ^ punctuation.definition.string.begin.owl
+#            ^^^^^^^^^^^^^^^^^^^^^ source.js.embedded.owl
+    id="this.props.name"
+#       ^^^^^^^^^^^^^^^ source.js.embedded.owl
+    name="this.props.name"
+#         ^^^^^^^^^^^^^^^ source.js.embedded.owl
+    value="this.props.value"
+    placeholder="this.props.inputAttributes?.placeholder"
+    onSelect="(value) => this.props.onChange(value, this.props.name, 'test')"
+#             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.js.embedded.owl
+#                                                                    ^^^^^^ meta.string.js string.quoted.single.js
+
+/>
