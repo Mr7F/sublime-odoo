@@ -64,10 +64,16 @@ class OdooNewModelInheritCommand(sublime_plugin.TextCommand):
             self.modules.update(find_modules(folder))
 
         current_file_name = self.view.file_name()
-        current_module = next(
-            (m for m in self.modules.values() if current_file_name.startswith(m + "/")),
-            None,
-        )
+        current_module = None
+        if current_file_name is not None:
+            current_module = next(
+                (
+                    m
+                    for m in self.modules.values()
+                    if current_file_name.startswith(m + "/")
+                ),
+                None,
+            )
         if not self.modules:
             sublime.error_message("No Odoo modules found")
             return

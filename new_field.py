@@ -1,6 +1,5 @@
 import ast
 import os
-import json
 import sublime_plugin
 import functools
 import sublime
@@ -14,32 +13,53 @@ def list_directories(root_dir):
     return [dirpath for dirpath, *_ in os.walk(root_dir)]
 
 
+def get_widget_names(widget_name):
+    # Heuristic to split the name (camel case, snake case, using dot, etc)
+    next_name = ""
+    prev = ""
+    for x in widget_name:
+        if prev.isupper() != x.isupper():
+            next_name += "_"
+        next_name += x
+        prev = x
+    part_name = re.split(r"[^a-zA-Z0-9]", next_name)
+    part_name = [x for x in part_name if x]
+    snake_name = "_".join(part_name).lower()
+    camel_name = "".join(p.capitalize() for p in part_name)
+    small_camel_name = camel_name[:1].lower() + camel_name[1:]
+    return snake_name, camel_name, small_camel_name
+
+
+def is_valid_widget_name(widget_name):
+    snake_name, camel_name, _small_camel_name = get_widget_names(widget_name)
+    return bool(
+        snake_name
+        and re.fullmatch(r"[a-z_][a-z0-9_]*", snake_name)
+        and re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*", camel_name)
+    )
+
+
 class OdooNewFieldWidgetCommand(sublime_plugin.TextCommand):
     """Command to create a new JS field."""
 
     def run(self, edit, module, directory, widget_name):
-        # Heuristic to split the name (camel case, snake case, using dot, etc)
-        next_name = ""
-        prev = ""
-        for x in widget_name:
-            if prev.isupper() != x.isupper():
-                next_name += "_"
-            next_name += x
-            prev = x
-        part_name = re.split(r"[^a-zA-Z0-9]", next_name)
-        part_name = [x for x in part_name if x]
-        snake_name = "_".join(part_name).lower()
-        del widget_name
-        camel_name = "".join(p.capitalize() for p in part_name)
-        small_camel_name = camel_name[:1].lower() + camel_name[1:]
+        assert is_valid_widget_name(widget_name)
+        snake_name, camel_name, small_camel_name = get_widget_names(widget_name)
         module_name = module.split("/")[-1]
+        component_dir = f"{directory}/{snake_name}"
+        js_path = f"{component_dir}/{snake_name}.js"
+        xml_path = f"{component_dir}/{snake_name}.xml"
 
-        os.makedirs(f"{directory}/{snake_name}", exist_ok=True)
+        if os.path.exists(js_path) or os.path.exists(xml_path):
+            sublime.error_message("The widget already exists")
+            return
 
-        with open(f"{directory}/{snake_name}/{snake_name}.js", "w") as file:
+        os.makedirs(component_dir, exist_ok=True)
+
+        with open(js_path, "w") as file:
             file.write("")
 
-        with open(f"{directory}/{snake_name}/{snake_name}.xml", "w") as file:
+        with open(xml_path, "w") as file:
             file.write(
                 DEFAULT_XML_TEMPLATE
                 % dict(
@@ -51,7 +71,7 @@ class OdooNewFieldWidgetCommand(sublime_plugin.TextCommand):
             )
 
         self.view.window().open_file(
-            f"{directory}/{snake_name}/{snake_name}.xml",
+            xml_path,
             flags=64,
         )
 
@@ -61,7 +81,7 @@ class OdooNewFieldWidgetCommand(sublime_plugin.TextCommand):
                 flags=64,
             )
         view_js = self.view.window().open_file(
-            f"{directory}/{snake_name}/{snake_name}.js",
+            js_path,
             flags=64,
         )
         self.view.window().focus_view(view_js)
@@ -88,10 +108,16 @@ class OdooNewFieldWidgetCommand(sublime_plugin.TextCommand):
             self.modules.update(find_modules(folder))
 
         current_file_name = self.view.file_name()
-        current_module = next(
-            (m for m in self.modules.values() if current_file_name.startswith(m + "/")),
-            None,
-        )
+        current_module = None
+        if current_file_name is not None:
+            current_module = next(
+                (
+                    m
+                    for m in self.modules.values()
+                    if current_file_name.startswith(m + "/")
+                ),
+                None,
+            )
         if not self.modules:
             sublime.error_message("No Odoo modules found")
             return
@@ -206,7 +232,7 @@ class NewFieldWidgetNameInputHandler(sublime_plugin.TextInputHandler):
         return "many2many_tags"
 
     def validate(self, text):
-        return True
+        return is_valid_widget_name(text)
 
 
 DEFAULT_JS_TEMPLATE = """import { _t } from "@web/core/l10n/translation";

@@ -1,13 +1,25 @@
-import shlex
 import os
 import re
+import subprocess
 import xml.etree.ElementTree as ET
+
+
+def run_rg(args):
+    try:
+        result = subprocess.run(
+            ["rg", *args],
+            capture_output=True,
+            check=False,
+            text=True,
+        )
+    except FileNotFoundError:
+        return []
+    return result.stdout.splitlines()
 
 
 def find_modules(root_dir):
     # Use ripgrep because it's way faster than python on large project
-    cmd = "rg --files --glob '**/__manifest__.py' %s" % shlex.quote(root_dir)
-    paths = os.popen(cmd).read().split("\n")
+    paths = run_rg(["--files", "--glob", "**/__manifest__.py", root_dir])
     paths = (p.strip().replace("/__manifest__.py", "") for p in paths if p.strip())
 
     modules = {}
@@ -27,26 +39,38 @@ def find_modules(root_dir):
 
 
 def get_models(root_dir):
-    cmd = (
-        "rg -t 'py' --trim --no-filename --no-line-number --fixed-strings ' _name = ' %s"
-        % shlex.quote(root_dir)
+    lines = run_rg(
+        [
+            "-t",
+            "py",
+            "--trim",
+            "--no-filename",
+            "--no-line-number",
+            "--fixed-strings",
+            " _name = ",
+            root_dir,
+        ]
     )
-    lines = os.popen(cmd).readlines()
-    lines = (
-        line[9:-2] for line in lines if line.startswith(("_name = '", '_name = "'))
+    models = (
+        line[9:-1] for line in lines if line.startswith(("_name = '", '_name = "'))
     )
-    return {line for line in lines if " " not in line}
+    return {model for model in models if " " not in model}
 
 
 def get_views(root_dir, model):
     # 1. Early filter with ripgrep
     s = """<field name="model">%s</field>""" % model
-    cmd = (
-        "rg -t 'xml' --trim --no-line-number --fixed-strings %s --count-matches %s"
-        % (shlex.quote(s), root_dir)
+    files = run_rg(
+        [
+            "-t",
+            "xml",
+            "--trim",
+            "--files-with-matches",
+            "--fixed-strings",
+            s,
+            root_dir,
+        ]
     )
-    files = os.popen(cmd).readlines()
-    files = [f.strip().rsplit(":", 1)[0] for f in files]
 
     # 2. Parse the XML files
     views = {

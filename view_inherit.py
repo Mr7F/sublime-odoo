@@ -34,7 +34,7 @@ class OdooNewViewInheritCommand(sublime_plugin.TextCommand):
         self.current_module = None
 
         file_name = self.view.file_name()
-        if not file_name.endswith(".xml") or "/views/" not in file_name:
+        if not (file_name or "").endswith(".xml") or "/views/" not in file_name:
             sublime.error_message(
                 "The current file should be in module/views/views.xml"
             )
@@ -102,7 +102,7 @@ class NewViewInheritViewTypeInputHandler(sublime_plugin.ListInputHandler):
         return sorted(self.views, key=lambda m: len(m))
 
     def validate(self, text):
-        return True
+        return text in self.views
 
     def preview(self, text):
         return text
