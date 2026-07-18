@@ -1,7 +1,7 @@
 import sublime_plugin
 import sublime
 
-from .utils import get_models, get_views
+from .lib.utils import get_models, get_views
 
 TEMPLATE = """
 <record id="%(model_snake)s_view_%(view_type)s" model="ir.ui.view">

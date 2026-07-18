@@ -1,4 +1,3 @@
-from tempfile import tempdir
 import sublime
 import sublime_plugin
 
@@ -47,7 +46,7 @@ snippets = [
 ]
 
 
-class SnippetPythonAttributeInsertCommand(sublime_plugin.TextCommand):
+class OdooSnippetPythonAttributeInsertCommand(sublime_plugin.TextCommand):
     """Allow to use better detection to trigger the snippets."""
 
     def run(self, edit, snippet):

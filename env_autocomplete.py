@@ -1,7 +1,8 @@
 import sublime
 import sublime_plugin
 from functools import partial
-from .utils import get_models
+
+from .lib.utils import get_models
 
 
 class OdooEnvAutoCompleteInsertCommand(sublime_plugin.TextCommand):

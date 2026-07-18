@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 template = """<snippet>
     <content><![CDATA[
@@ -21,7 +21,8 @@ template_default = """<snippet>
 """
 
 if __name__ == "__main__":
-    os.system("rm ./xml-attribute-*.sublime-snippet")
+    for snippet_path in Path(".").glob("xml-attribute-*.sublime-snippet"):
+        snippet_path.unlink()
 
     attributes = [
         "name",

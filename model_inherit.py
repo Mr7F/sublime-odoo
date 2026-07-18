@@ -4,7 +4,7 @@ import functools
 import sublime
 import re
 
-from .utils import find_modules, add_python_import
+from .lib.utils import add_python_import, find_modules
 
 # Inserted as a snippet to be able to change `inherit` to `name` if needed
 TEMPLATE_MODEL = """# Part of Odoo. See LICENSE file for full copyright and licensing details.

@@ -6,7 +6,7 @@ import sublime
 import re
 
 
-from .utils import find_modules
+from .lib.utils import find_modules
 
 
 def list_directories(root_dir):

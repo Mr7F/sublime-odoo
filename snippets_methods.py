@@ -62,7 +62,7 @@ def _compute_${1:name}(self):
 ]
 
 
-class SnippetPythonFunctionInsertCommand(sublime_plugin.TextCommand):
+class OdooSnippetPythonFunctionInsertCommand(sublime_plugin.TextCommand):
     """Allow to use space in trigger.
 
     Sublime text does not allow space in trigger, so we do custom code
@@ -97,7 +97,7 @@ class SnippetPythonFunctionEventListener(sublime_plugin.EventListener):
         return [
             sublime.CompletionItem.command_completion(
                 trigger,
-                "snippet_python_function_insert",
+                "odoo_snippet_python_function_insert",
                 {"snippet": snippet},
                 name,
                 sublime.KIND_SNIPPET,
