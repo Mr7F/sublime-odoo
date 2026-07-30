@@ -1,0 +1,30 @@
+# SYNTAX TEST "Packages/sublime-odoo/OdooAccess.sublime-syntax"
+
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+# <- entity.name.constant.id.odoo-access
+#   ^ punctuation.separator.sequence.csv.odoo-access
+#    ^^^^ string.unquoted.name.odoo-access
+#         ^^^^^^^^^^^ support.type.model.odoo-access
+#                     ^^^^^^^^^^^ support.constant.group.odoo-access
+#                                 ^^^^^^^^^ constant.language.boolean.permission.odoo-access
+#                                           ^^^^^^^^^^ constant.language.boolean.permission.odoo-access
+#                                                      ^^^^^^^^^^^ constant.language.boolean.permission.odoo-access
+#                                                                  ^^^^^^^^^^^ constant.language.boolean.permission.odoo-access
+
+access_mailing_test_customer_all,access.mailing.test.customer.all,model_mailing_test_customer,,0,0,0,0
+# <- entity.name.constant.id.odoo-access
+#                                 ^ punctuation.separator.sequence.csv.odoo-access
+#                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.unquoted.name.odoo-access
+#                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ support.type.model.odoo-access
+#                                                                                               ^ punctuation.separator.sequence.csv.odoo-access
+#                                                                                                ^ constant.language.boolean.permission.odoo-access
+#                                                                                                  ^ constant.language.boolean.permission.odoo-access
+#                                                                                                    ^ constant.language.boolean.permission.odoo-access
+#                                                                                                      ^ constant.language.boolean.permission.odoo-access
+
+access_mailing_test_customer_user,access.mailing.test.customer.user,model_mailing_test_customer,base.group_user,1,1,1,1
+#                                                                                                 ^^^^^^^^^^^^^^^ support.constant.group.odoo-access
+#                                                                                                                 ^ constant.language.boolean.permission.odoo-access
+#                                                                                                                   ^ constant.language.boolean.permission.odoo-access
+#                                                                                                                     ^ constant.language.boolean.permission.odoo-access
+#                                                                                                                       ^ constant.language.boolean.permission.odoo-access

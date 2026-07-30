@@ -1,0 +1,242 @@
+%YAML 1.2
+---
+name: CSV - Odoo - Access
+scope: source.csv.odoo-access
+version: 2
+
+# Using the complete suffix avoids taking over unrelated CSV files.
+file_extensions:
+  - ir.model.access.csv
+
+first_line_match: '^id,name,(?:model_id,group_id/id,operation,domain|model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink)\r?$'
+
+variables:
+  csv_field: '(?:"(?:[^"]|"")*"|[^,\r\n]*)'
+
+contexts:
+  main:
+    - match: '^(id)(,)(name)(,)(model_id)(,)(group_id/id)(,)(operation)(,)(domain)(?=\r?$)'
+      captures:
+        1: entity.name.constant.id.odoo-access
+        2: punctuation.separator.sequence.csv.odoo-access
+        3: string.unquoted.name.odoo-access
+        4: punctuation.separator.sequence.csv.odoo-access
+        5: support.type.model.odoo-access
+        6: punctuation.separator.sequence.csv.odoo-access
+        7: support.constant.group.odoo-access
+        8: punctuation.separator.sequence.csv.odoo-access
+        9: keyword.other.permission.odoo-access
+        10: punctuation.separator.sequence.csv.odoo-access
+        11: source.python.embedded.odoo-access
+      set: consolidated-main
+    - match: '^(id)(,)(name)(,)(model_id:id)(,)(group_id:id)(,)(perm_read)(,)(perm_write)(,)(perm_create)(,)(perm_unlink)(?=\r?$)'
+      captures:
+        1: entity.name.constant.id.odoo-access
+        2: punctuation.separator.sequence.csv.odoo-access
+        3: string.unquoted.name.odoo-access
+        4: punctuation.separator.sequence.csv.odoo-access
+        5: support.type.model.odoo-access
+        6: punctuation.separator.sequence.csv.odoo-access
+        7: support.constant.group.odoo-access
+        8: punctuation.separator.sequence.csv.odoo-access
+        9: constant.language.boolean.permission.odoo-access
+        10: punctuation.separator.sequence.csv.odoo-access
+        11: constant.language.boolean.permission.odoo-access
+        12: punctuation.separator.sequence.csv.odoo-access
+        13: constant.language.boolean.permission.odoo-access
+        14: punctuation.separator.sequence.csv.odoo-access
+        15: constant.language.boolean.permission.odoo-access
+      set: legacy-main
+    - match: '[^\r\n]+'
+      scope: invalid.illegal.unknown-header.odoo-access
+
+  consolidated-main:
+    - match: '^(?=[^\r\n])'
+      push: id-field
+
+  legacy-main:
+    - match: '^({{csv_field}})(,)({{csv_field}})(,)({{csv_field}})(,)({{csv_field}})(,)([01])(?=,)(,)([01])(?=,)(,)([01])(?=,)(,)([01])(?=\r?$)'
+      captures:
+        1: entity.name.constant.id.odoo-access
+        2: punctuation.separator.sequence.csv.odoo-access
+        3: string.unquoted.name.odoo-access
+        4: punctuation.separator.sequence.csv.odoo-access
+        5: support.type.model.odoo-access
+        6: punctuation.separator.sequence.csv.odoo-access
+        7: support.constant.group.odoo-access
+        8: punctuation.separator.sequence.csv.odoo-access
+        9: constant.language.boolean.permission.odoo-access
+        10: punctuation.separator.sequence.csv.odoo-access
+        11: constant.language.boolean.permission.odoo-access
+        12: punctuation.separator.sequence.csv.odoo-access
+        13: constant.language.boolean.permission.odoo-access
+        14: punctuation.separator.sequence.csv.odoo-access
+        15: constant.language.boolean.permission.odoo-access
+    - match: '[^\r\n]+'
+      scope: invalid.illegal.legacy-row.odoo-access
+
+  id-field:
+    - match: '"'
+      scope: punctuation.definition.string.begin.csv.odoo-access
+      set: id-field-quoted
+    - match: '[^,\r\n]+'
+      scope: entity.name.constant.id.odoo-access
+    - match: ','
+      scope: punctuation.separator.sequence.csv.odoo-access
+      set: name-field
+    - include: malformed-row-end
+
+  id-field-quoted:
+    - meta_content_scope: entity.name.constant.id.odoo-access
+    - include: quoted-field-escape
+    - match: '"'
+      scope: punctuation.definition.string.end.csv.odoo-access
+      set: id-field-end
+    - include: quoted-field-content
+
+  id-field-end:
+    - match: ','
+      scope: punctuation.separator.sequence.csv.odoo-access
+      set: name-field
+    - include: malformed-after-quote
+
+  name-field:
+    - match: '"'
+      scope: punctuation.definition.string.begin.csv.odoo-access
+      set: name-field-quoted
+    - match: '[^,\r\n]+'
+      scope: string.unquoted.name.odoo-access
+    - match: ','
+      scope: punctuation.separator.sequence.csv.odoo-access
+      set: model-field
+    - include: malformed-row-end
+
+  name-field-quoted:
+    - meta_content_scope: string.quoted.double.name.odoo-access
+    - include: quoted-field-escape
+    - match: '"'
+      scope: punctuation.definition.string.end.csv.odoo-access
+      set: name-field-end
+    - include: quoted-field-content
+
+  name-field-end:
+    - match: ','
+      scope: punctuation.separator.sequence.csv.odoo-access
+      set: model-field
+    - include: malformed-after-quote
+
+  model-field:
+    - match: '"'
+      scope: punctuation.definition.string.begin.csv.odoo-access
+      set: model-field-quoted
+    - match: '[^,\r\n]+'
+      scope: support.type.model.odoo-access
+    - match: ','
+      scope: punctuation.separator.sequence.csv.odoo-access
+      set: group-field
+    - include: malformed-row-end
+
+  model-field-quoted:
+    - meta_content_scope: support.type.model.odoo-access
+    - include: quoted-field-escape
+    - match: '"'
+      scope: punctuation.definition.string.end.csv.odoo-access
+      set: model-field-end
+    - include: quoted-field-content
+
+  model-field-end:
+    - match: ','
+      scope: punctuation.separator.sequence.csv.odoo-access
+      set: group-field
+    - include: malformed-after-quote
+
+  group-field:
+    - match: '"'
+      scope: punctuation.definition.string.begin.csv.odoo-access
+      set: group-field-quoted
+    - match: '[^,\r\n]+'
+      scope: support.constant.group.odoo-access
+    - match: ','
+      scope: punctuation.separator.sequence.csv.odoo-access
+      set: operation-field
+    - include: malformed-row-end
+
+  group-field-quoted:
+    - meta_content_scope: support.constant.group.odoo-access
+    - include: quoted-field-escape
+    - match: '"'
+      scope: punctuation.definition.string.end.csv.odoo-access
+      set: group-field-end
+    - include: quoted-field-content
+
+  group-field-end:
+    - match: ','
+      scope: punctuation.separator.sequence.csv.odoo-access
+      set: operation-field
+    - include: malformed-after-quote
+
+  operation-field:
+    - match: '"'
+      scope: punctuation.definition.string.begin.csv.odoo-access
+      set: operation-field-quoted
+    - match: '[crud]+(?=,)'
+      scope: keyword.other.permission.odoo-access
+    - match: '[^,\r\n]+'
+      scope: invalid.illegal.operation.odoo-access
+    - match: ','
+      scope: punctuation.separator.sequence.csv.odoo-access
+      set: domain-field
+    - include: malformed-row-end
+
+  operation-field-quoted:
+    - match: '[crud]+(?=")'
+      scope: keyword.other.permission.odoo-access
+    - match: '""'
+      scope: constant.character.escape.csv.odoo-access
+    - match: '"'
+      scope: punctuation.definition.string.end.csv.odoo-access
+      set: operation-field-end
+    - match: '[^"]+'
+      scope: invalid.illegal.operation.odoo-access
+
+  operation-field-end:
+    - match: ','
+      scope: punctuation.separator.sequence.csv.odoo-access
+      set: domain-field
+    - include: malformed-after-quote
+
+  domain-field:
+    - match: '"'
+      scope: punctuation.definition.string.begin.csv.odoo-access
+      embed: scope:source.python
+      embed_scope: source.python.embedded.odoo-access
+      escape: '"(?=\r?$)'
+      escape_captures:
+        0: punctuation.definition.string.end.csv.odoo-access
+    - match: '(?=[^\r\n])'
+      set: domain-field-unquoted
+    - match: '\r?$'
+      pop: true
+
+  domain-field-unquoted:
+    - meta_scope: source.python.embedded.odoo-access
+    - match: '(?=\r?$)'
+      pop: true
+    - include: scope:source.python
+
+  quoted-field-escape:
+    - match: '""'
+      scope: constant.character.escape.csv.odoo-access
+
+  quoted-field-content:
+    - match: '[^"]+'
+
+  malformed-after-quote:
+    - match: '[^,\r\n]+'
+      scope: invalid.illegal.unexpected-character.odoo-access
+    - include: malformed-row-end
+
+  malformed-row-end:
+    - match: '\r?$'
+      scope: invalid.illegal.incomplete-row.odoo-access
+      pop: true

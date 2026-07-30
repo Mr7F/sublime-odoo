@@ -1,0 +1,40 @@
+# SYNTAX TEST "Packages/sublime-odoo/OdooAccess.sublime-syntax"
+
+id,name,model_id,group_id/id,operation,domain
+# <- entity.name.constant.id.odoo-access
+#   ^ punctuation.separator.sequence.csv.odoo-access
+#    ^^^^ string.unquoted.name.odoo-access
+#         ^^^^^^^^ support.type.model.odoo-access
+#                  ^^^^^^^^^^^ support.constant.group.odoo-access
+#                              ^^^^^^^^^ keyword.other.permission.odoo-access
+#                                        ^^^^^^ source.python.embedded.odoo-access
+
+access_account_asset,account.asset,account.asset,account.group_account_readonly,r,
+# <- entity.name.constant.id.odoo-access
+#                     ^ punctuation.separator.sequence.csv.odoo-access
+#                      ^^^^^^^^^^^^^ string.unquoted.name.odoo-access
+#                                    ^^^^^^^^^^^^^ support.type.model.odoo-access
+#                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ support.constant.group.odoo-access
+#                                                                                ^ keyword.other.permission.odoo-access
+
+account_asset_multi_company_rule,Account Asset multi-company,account.asset,,crud,"[('company_id', 'in', company_ids)]"
+# <- entity.name.constant.id.odoo-access
+#                                 ^ punctuation.separator.sequence.csv.odoo-access
+#                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.unquoted.name.odoo-access
+#                                                              ^^^^^^^^^^^^^ support.type.model.odoo-access
+#                                                                             ^^^^ keyword.other.permission.odoo-access
+#                                                                                 ^ punctuation.separator.sequence.csv.odoo-access
+#                                                                                  ^ punctuation.definition.string.begin.csv.odoo-access
+#                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python.embedded.odoo-access
+#                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+#                                                                                                                       ^ punctuation.definition.string.end.csv.odoo-access
+
+access_quoted,"A name, with comma",account.asset,base.group_user,cru,
+#               ^ punctuation.definition.string.begin.csv.odoo-access
+#                ^^^^^^^^^^^^^^^^^^ string.quoted.double.name.odoo-access
+#                                  ^ punctuation.definition.string.end.csv.odoo-access
+#                                                  ^^^^^^^^^^^^^^^ support.constant.group.odoo-access
+#                                                                  ^^^ keyword.other.permission.odoo-access
+
+access_bad,Bad operation,account.asset,base.group_user,rx,
+#                                                        ^^ invalid.illegal.operation.odoo-access

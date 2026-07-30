@@ -9,7 +9,7 @@ Add some snippets for common code
 Check the snippet folder to see what's available.
 
 ## Syntax highlighting
-Syntax highlighting for QWeb templates, OWL templates and views.
+Syntax highlighting for QWeb templates, OWL templates, views, and access CSV files.
 
 Choose "XML - Odoo", and it will automatically choose the right syntax
 - OWL syntax (with JS in expression) if inside `<templates/>`
@@ -24,6 +24,11 @@ It highlight JS template inside Python template (eg template of kanban views)
 It also highlight mail templates and "backend" templates.
 <p align="center">
   <img src="img/demo_template.png">
+</p>
+
+And ir.model.access.csv
+<p align="center">
+  <img src="img/ir.model.access.csv.png">
 </p>
 
 With this syntax highlighting comes the symbols, you can just to view / component template with `ctrl+r` / `ctrl+shift+r`
