@@ -35,7 +35,7 @@ And ir.model.access.csv
   <img src="img/ir.model.access.csv.png">
 </p>
 
-With this syntax highlighting comes the symbols, you can just to view / component template with `ctrl+r` / `ctrl+shift+r`
+With this syntax highlighting comes the symbols, you can jump to view / component template with `ctrl+r` / `ctrl+shift+r`
 <p align="center">
   <img src="img/demo_symbols.gif">
 </p>
