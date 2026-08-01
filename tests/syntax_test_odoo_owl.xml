@@ -8,6 +8,27 @@
 #                                                 ^^^^^^^^^^^^^^^^^^^ string.quoted.single.owl source.js
 #                                                                    ^ punctuation.definition.string.end.owl
 
+<attribute name="t-if">fieldDef.record_name &amp;&amp; (!fieldDef.is_property || this.state.page.previousPage?.previousPage)</attribute>
+#                      ^^^^^^^^^^^^^^^^^^^^ source.js
+
+<attribute name="t-if" add="!order.isInCompany" separator=" and "/>
+#                           ^^^^^^^^^^^^^^^^^^ source.js
+
+<attribute name="class" add="mt-1 mb-1" remove="mt-2 mb-2" separator=" "/>
+#                            ^^^^^^^^^ string.quoted.double.xml - source.js
+
+<attribute name="t-attf-class">{{ stateIcon(currentValue) }} {{ statusColor(currentValue) }}</attribute>
+#                                ^^^^^^^^^^^^^^^^^^^^^^^^^ source.js
+#                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.js
+
+<attribute name="t-attf-class" separator=" " add="#{state.custom_class}"/>
+#                                                   ^^^^^^^^^^^^^^^^^^ source.js
+
+<xpath expr="//ActionSwiper" position="move"/>
+#            ^^^^^^^^^^^^^^ source.xpath
+#              ^^^^^^^^^^^^ entity.name.tag.xpath
+#                                      ^^^^ constant.language.position.odoo-owl
+
 <t t-elif="state.count === 0"/>
 #          ^^^^^^^^^^^^^^^^^ string.quoted.double.owl source.js
 

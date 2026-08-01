@@ -75,6 +75,44 @@
 <t t-name="my_module.report_template"/>
 #          ^^^^^^^^^^^^^^^^^^^^^^^^^ qweb.symbols string.quoted.double.qweb - source.python
 
+<xpath expr="//field[@name='description']" position="after">
+#            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.xpath
+#              ^^^^^ entity.name.tag.xpath
+#                          ^^^^^^^^^^^^^ source.xpath string.quoted.single.xpath
+#                                                    ^^^^^ constant.language.position.odoo-view
+</xpath>
+
+<field name="x_field" position="before">
+#                               ^^^^^^ constant.language.position.odoo-view
+</field>
+
+<attribute name="invisible">True</attribute>
+#                           ^^^^ source.python constant.language.boolean.true.python
+
+<attribute name="t-if">record.active and not record.archived</attribute>
+#                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+
+<attribute name="invisible" add="delivery_type=='ups_rest'" separator=" or "/>
+#                                ^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+
+<attribute name="class" add="mt-1 mb-1" remove="mt-2 mb-2" separator=" "/>
+#                            ^^^^^^^^^ string.quoted.double.xml - source.python
+
+<attribute name="t-attf-class">#{'col-7 mt-5' if report_type == 'pdf' else 'col-12 col-md-7'} ms-5 d-inline-block float-end</attribute>
+#                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+#                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.qweb-attf - source.python
+
+<attribute name="t-attf-class" separator=" " add="#{state.custom_class}"/>
+#                                                   ^^^^^^^^^^^^^^^^^^ source.python
+
+<xpath expr="//div" position="typo">
+#                             ^^^^ invalid.illegal.position.odoo-view
+</xpath>
+
+<list decoration-danger="state == 'failed'">
+#                        ^^^^^^^^^^^^^^^^^ source.python
+</list>
+
 <templates>
     <t t-if="props.active and state.count > 0" t-attf-class="btn {{ props.name }}"/>
 #            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ text.xml.owl source.js - source.python

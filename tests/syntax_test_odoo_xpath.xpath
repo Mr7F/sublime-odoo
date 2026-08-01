@@ -1,0 +1,58 @@
+# SYNTAX TEST "Packages/sublime-odoo/OdooXPath.sublime-syntax"
+
+ //field[@name='x_field']
+#^^ punctuation.separator.path.descendant-or-self.xpath
+#  ^^^^^ entity.name.tag.xpath
+#       ^ punctuation.section.brackets.begin.xpath
+#        ^ keyword.operator.axis.attribute.xpath
+#         ^^^^ entity.other.attribute-name.xpath
+#             ^ keyword.operator.comparison.xpath
+#              ^^^^^^^^^ string.quoted.single.xpath
+#                       ^ punctuation.section.brackets.end.xpath
+
+ .//div[hasclass('wrapper')]
+#^ keyword.operator.self.xpath
+# ^^ punctuation.separator.path.descendant-or-self.xpath
+#   ^^^ entity.name.tag.xpath
+#       ^^^^^^^^ support.function.xpath
+#               ^ punctuation.section.group.begin.xpath
+#                ^^^^^^^^^ string.quoted.single.xpath
+#                         ^ punctuation.section.group.end.xpath
+
+ ancestor::form[1]
+#^^^^^^^^ keyword.other.axis.xpath
+#        ^^ punctuation.separator.axis.xpath
+#          ^^^^ entity.name.tag.xpath
+#               ^ constant.numeric.xpath
+
+ @*
+#^ keyword.operator.axis.attribute.xpath
+# ^ entity.other.attribute-name.xpath keyword.operator.wildcard.xpath
+
+ //page[@name='pg']/group[@name='gp']/field[@name='description' and hasclass('foo')]
+#  ^^^^ entity.name.tag.xpath
+#                   ^^^^^ entity.name.tag.xpath
+#                                     ^^^^^ entity.name.tag.xpath
+#                                                               ^^^ keyword.operator.logical.xpath
+#                                                                   ^^^^^^^^ support.function.xpath
+#                                                                            ^^^^^ string.quoted.single.xpath
+
+ count(//field) > 3
+#^^^^^ support.function.xpath
+#        ^^^^^ entity.name.tag.xpath
+#               ^ keyword.operator.comparison.xpath
+#                 ^ constant.numeric.xpath
+
+ $myvar = 'x'
+#^^^^^^ variable.other.xpath
+#       ^ keyword.operator.comparison.xpath
+
+ //a/../b
+#  ^ entity.name.tag.xpath
+#    ^^ keyword.operator.parent.xpath
+#       ^ entity.name.tag.xpath
+
+ //text()
+#  ^^^^ support.function.node-type.xpath
+#      ^ punctuation.section.group.begin.xpath
+#       ^ punctuation.section.group.end.xpath

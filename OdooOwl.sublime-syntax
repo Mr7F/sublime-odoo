@@ -17,6 +17,7 @@ contexts:
   tag:
     - meta_prepend: true
     - include: owl-component-tag
+    - include: owl-attribute-tag
 
   tag-attribute:
     - meta_prepend: true
@@ -26,6 +27,12 @@ contexts:
     - match: (?i:(t-name))
       scope: entity.other.attribute-name
       push: owl-symbols-assignment
+    - match: (expr)
+      scope: entity.other.attribute-name
+      push: owl-xpath-assignment
+    - match: (position)
+      scope: entity.other.attribute-name
+      push: owl-position-assignment
     # `t-att` attribute
     - match: (?i:(t-name|t-set-slot|t-slot-scope|t-call|t-inherit({{owl_attribute_charset}}*))|t-ref)
       scope: entity.other.attribute-name
@@ -167,6 +174,164 @@ contexts:
     - match: (?i:{{owl_attribute_charset}}+)
       scope: entity.other.attribute-name
       push: owl-directive-assignment
+
+  # -----------------------------------------------------------------------
+  # Special tags that contain code
+  # -----------------------------------------------------------------------
+
+  # <attribute name="..."> : patches an attribute via <xpath position="attributes">
+  # - with a body: the body is the new value, embedded as JS when `name` is a
+  #   `t-*` directive, attf-parsed when `name` is `t-attf-*`/`t-valuef`
+  # - with `add`/`remove`/`separator` instead (no body, self-closing): same
+  #   embedding rules apply to `add`/`remove` (spliced into the resulting
+  #   value via `separator`, which itself stays plain); plain for any other
+  #   `name`, e.g. <attribute name="class" add="mt-1" remove="mt-2"/>
+  owl-attribute-tag:
+    - match: (<)(attribute)\b
+      captures:
+        1: punctuation.definition.tag.begin.opening.xml
+        2: entity.name.tag.localname.xml
+      push: owl-attribute-tag-content
+
+  owl-attribute-tag-content:
+    - meta_scope: meta.tag.xml
+    - match: />
+      scope: punctuation.definition.tag.end.self-closing.xml
+      pop: 1
+    - match: (name)(=)(\")(t-attf-{{owl_attribute_charset}}+|t-valuef)(\")
+      captures:
+        1: entity.other.attribute-name
+        2: punctuation.separator.key-value.xml
+        3: meta.string.xml punctuation.definition.string.begin.xml
+        4: string.quoted.double.xml
+        5: meta.string.xml punctuation.definition.string.end.xml
+      set: owl-attribute-tag-attf-name
+    - match: (name)(=)(\")(t-{{owl_attribute_charset}}+)(\")
+      captures:
+        1: entity.other.attribute-name
+        2: punctuation.separator.key-value.xml
+        3: meta.string.xml punctuation.definition.string.begin.xml
+        4: string.quoted.double.xml
+        5: meta.string.xml punctuation.definition.string.end.xml
+      set: owl-attribute-tag-code-name
+    - include: tag-end-missing-pop
+    - include: tag-attribute
+    - match: '>'
+      scope: punctuation.definition.tag.end.opening.xml
+      pop: 1
+
+  owl-attribute-tag-code-name:
+    - meta_scope: meta.tag.xml
+    - match: />
+      scope: punctuation.definition.tag.end.self-closing.xml
+      pop: 1
+    - match: (add|remove)
+      scope: entity.other.attribute-name
+      push: owl-directive-assignment
+    - match: (>)
+      captures:
+        1: punctuation.definition.tag.end.opening.xml
+      embed: scope:source.js
+      embed_scope: source.js
+      escape: (</)(attribute)(>)
+      escape_captures:
+          1: punctuation.definition.string.end.qweb
+          2: entity.name.tag.localname.xml
+          3: punctuation.definition.string.end.qweb
+      pop: 1
+    - include: tag-end-missing-pop
+    - include: tag-attribute
+
+  owl-attribute-tag-attf-name:
+    - meta_scope: meta.tag.xml
+    - match: />
+      scope: punctuation.definition.tag.end.self-closing.xml
+      pop: 1
+    - match: (add|remove)
+      scope: entity.other.attribute-name
+      push: owl-attf-assignment
+    - match: (>)
+      captures:
+        1: punctuation.definition.tag.end.opening.xml
+      embed: owl-attf-string
+      embed_scope: meta.string.owl
+      escape: (</)(attribute)(>)
+      escape_captures:
+          1: punctuation.definition.string.end.qweb
+          2: entity.name.tag.localname.xml
+          3: punctuation.definition.string.end.qweb
+      pop: 1
+    - include: tag-end-missing-pop
+    - include: tag-attribute
+
+  # -----------------------------------------------------------------------
+  # `expr` (xpath expression, used by <xpath expr="...">)
+  # -----------------------------------------------------------------------
+
+  owl-xpath-assignment:
+    - meta_content_scope: meta.directive.owl
+    - match: =
+      scope: meta.directive.owl punctuation.separator.key-value.owl
+      set: owl-xpath-value
+    - include: tag-else-pop
+
+  owl-xpath-value:
+      - match: \"
+        captures:
+          0: punctuation.definition.string.begin.owl
+        pop: 1
+        embed: scope:source.xpath
+        embed_scope: source.xpath
+        escape: \"
+        escape_captures:
+          0: punctuation.definition.string.end.owl
+      - match: \'
+        captures:
+          0: punctuation.definition.string.begin.owl
+        pop: 1
+        embed: scope:source.xpath
+        embed_scope: source.xpath
+        escape: \'
+        escape_captures:
+          0: punctuation.definition.string.end.owl
+      - include: tag-else-pop
+
+  # -----------------------------------------------------------------------
+  # `position` (view/xpath inheritance operation, a fixed set of values)
+  # -----------------------------------------------------------------------
+
+  owl-position-assignment:
+    - meta_content_scope: meta.directive.owl
+    - match: =
+      scope: meta.directive.owl punctuation.separator.key-value.owl
+      set: owl-position-value
+    - include: tag-else-pop
+
+  owl-position-value:
+      - match: \"
+        captures:
+          0: punctuation.definition.string.begin.owl
+        pop: 1
+        embed: owl-position-content
+        escape: \"
+        escape_captures:
+          0: punctuation.definition.string.end.owl
+      - match: \'
+        captures:
+          0: punctuation.definition.string.begin.owl
+        pop: 1
+        embed: owl-position-content
+        escape: \'
+        escape_captures:
+          0: punctuation.definition.string.end.owl
+      - include: tag-else-pop
+
+  owl-position-content:
+    - meta_scope: string.quoted.double.owl
+    - match: \b(inside|after|before|replace|attributes|move)\b
+      scope: constant.language.position.odoo-owl
+    - match: \S+
+      scope: invalid.illegal.position.odoo-owl
 
   # -----------------------------------------------------------------------
   # Attribute that should be added in symbols list

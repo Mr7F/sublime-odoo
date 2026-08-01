@@ -12,6 +12,7 @@ file_extensions:
 
 variables:
   owl_attribute_charset: '[A-Za-z0-9._-]'
+  view_python_attribute_name: 'readonly|invisible|context|options|domain|search|required|column_invisible|colors|eval|filter_domain|decoration-[A-Za-z0-9._-]+'
 
 contexts:
   tag-attribute:
@@ -24,9 +25,15 @@ contexts:
   # -----------------------------------------------------------------------
 
   view-directive:
-    - match: (readonly|invisible|context|options|domain|search|required|column_invisible|colors|eval|filter_domain|decoration-{{owl_attribute_charset}}+)
+    - match: ({{view_python_attribute_name}})
       scope: entity.other.attribute-name
       push: view-directive-assignment
+    - match: (expr)
+      scope: entity.other.attribute-name
+      push: view-xpath-assignment
+    - match: (position)
+      scope: entity.other.attribute-name
+      push: view-position-assignment
 
   view-directive-assignment:
     - meta_content_scope: meta.directive.qweb
@@ -57,6 +64,75 @@ contexts:
       - include: tag-else-pop
 
   # -----------------------------------------------------------------------
+  # `expr` (xpath expression, used by <xpath expr="...">)
+  # -----------------------------------------------------------------------
+
+  view-xpath-assignment:
+    - meta_content_scope: meta.directive.qweb
+    - match: =
+      scope: meta.directive.qweb punctuation.separator.key-value.qweb
+      set: view-xpath-value
+    - include: tag-else-pop
+
+  view-xpath-value:
+      - match: \"
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: scope:source.xpath
+        embed_scope: source.xpath
+        escape: \"
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+      - match: \'
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: scope:source.xpath
+        embed_scope: source.xpath
+        escape: \'
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+      - include: tag-else-pop
+
+  # -----------------------------------------------------------------------
+  # `position` (view/xpath inheritance operation, a fixed set of values)
+  # -----------------------------------------------------------------------
+
+  view-position-assignment:
+    - meta_content_scope: meta.directive.qweb
+    - match: =
+      scope: meta.directive.qweb punctuation.separator.key-value.qweb
+      set: view-position-value
+    - include: tag-else-pop
+
+  view-position-value:
+      - match: \"
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: view-position-content
+        escape: \"
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+      - match: \'
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: view-position-content
+        escape: \'
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+      - include: tag-else-pop
+
+  view-position-content:
+    - meta_scope: string.quoted.double.qweb
+    - match: \b(inside|after|before|replace|attributes|move)\b
+      scope: constant.language.position.odoo-view
+    - match: \S+
+      scope: invalid.illegal.position.odoo-view
+
+  # -----------------------------------------------------------------------
   # tag that contain code
   # -----------------------------------------------------------------------
 
@@ -64,6 +140,7 @@ contexts:
     - meta_prepend: true
     - include: owl-component-tag
     - include: odoo-view-special-tag
+    - include: odoo-view-attribute-tag
     - include: t-tag-with-tcall
 
   # Special tags that contain code
@@ -85,6 +162,92 @@ contexts:
           1: punctuation.definition.string.end.qweb
           2: entity.name.tag.localname.xml
           3: punctuation.definition.string.end.qweb
+
+  # <attribute name="..."> : patches an attribute via <xpath position="attributes">
+  # - with a body: the body is the new value, embedded as python when `name`
+  #   is a known code-holding attribute (or a `t-*` directive), attf-parsed
+  #   when `name` is `t-attf-*`/`t-valuef`
+  # - with `add`/`remove`/`separator` instead (no body, self-closing): same
+  #   embedding rules apply to `add`/`remove` (spliced into the resulting
+  #   value via `separator`, which itself stays plain); plain for any other
+  #   `name`, e.g. <attribute name="class" add="mt-1" remove="mt-2"/>
+  odoo-view-attribute-tag:
+    - match: (<)(attribute)\b
+      captures:
+        1: punctuation.definition.tag.begin.opening.xml
+        2: entity.name.tag.localname.xml
+      push: odoo-view-attribute-tag-content
+
+  odoo-view-attribute-tag-content:
+    - meta_scope: meta.tag.xml
+    - match: />
+      scope: punctuation.definition.tag.end.self-closing.xml
+      pop: 1
+    - match: (name)(=)(\")(t-attf-{{owl_attribute_charset}}+|t-valuef)(\")
+      captures:
+        1: entity.other.attribute-name
+        2: punctuation.separator.key-value.xml
+        3: meta.string.xml punctuation.definition.string.begin.xml
+        4: string.quoted.double.xml
+        5: meta.string.xml punctuation.definition.string.end.xml
+      set: odoo-view-attribute-tag-attf-name
+    - match: (name)(=)(\")({{view_python_attribute_name}}|t-{{owl_attribute_charset}}+)(\")
+      captures:
+        1: entity.other.attribute-name
+        2: punctuation.separator.key-value.xml
+        3: meta.string.xml punctuation.definition.string.begin.xml
+        4: string.quoted.double.xml
+        5: meta.string.xml punctuation.definition.string.end.xml
+      set: odoo-view-attribute-tag-code-name
+    - include: tag-end-missing-pop
+    - include: tag-attribute
+    - match: '>'
+      scope: punctuation.definition.tag.end.opening.xml
+      pop: 1
+
+  odoo-view-attribute-tag-code-name:
+    - meta_scope: meta.tag.xml
+    - match: />
+      scope: punctuation.definition.tag.end.self-closing.xml
+      pop: 1
+    - match: (add|remove)
+      scope: entity.other.attribute-name
+      push: view-directive-assignment
+    - match: (>)
+      captures:
+        1: punctuation.definition.tag.end.opening.xml
+      embed: scope:source.python
+      embed_scope: source.python
+      escape: (</)(attribute)(>)
+      escape_captures:
+          1: punctuation.definition.string.end.qweb
+          2: entity.name.tag.localname.xml
+          3: punctuation.definition.string.end.qweb
+      pop: 1
+    - include: tag-end-missing-pop
+    - include: tag-attribute
+
+  odoo-view-attribute-tag-attf-name:
+    - meta_scope: meta.tag.xml
+    - match: />
+      scope: punctuation.definition.tag.end.self-closing.xml
+      pop: 1
+    - match: (add|remove)
+      scope: entity.other.attribute-name
+      push: qweb-attf-assignment
+    - match: (>)
+      captures:
+        1: punctuation.definition.tag.end.opening.xml
+      embed: qweb-attf-string
+      embed_scope: meta.string.qweb
+      escape: (</)(attribute)(>)
+      escape_captures:
+          1: punctuation.definition.string.end.qweb
+          2: entity.name.tag.localname.xml
+          3: punctuation.definition.string.end.qweb
+      pop: 1
+    - include: tag-end-missing-pop
+    - include: tag-attribute
 
   # -----------------------------------------------------------------------
   # JS template inside python template (kanban view)

@@ -1,0 +1,158 @@
+%YAML 1.2
+---
+# XPath 1.0 expressions, as used in Odoo view inheritance `<xpath expr="...">`
+# and the `expr` attribute in general.
+name: XPath
+scope: source.xpath
+version: 2
+
+file_extensions:
+  - xpath
+
+variables:
+  identifier: '[[:alpha:]_][[:alnum:]_.-]*'
+  qname: '(?:{{identifier}}:)?{{identifier}}'
+  axis_name: 'ancestor-or-self|ancestor|attribute|child|descendant-or-self|descendant|following-sibling|following|namespace|parent|preceding-sibling|preceding|self'
+  node_type: 'comment|text|processing-instruction|node'
+
+contexts:
+  main:
+    - include: strings
+    - include: numbers
+    - include: variable-reference
+    - include: axis
+    - include: node-type-test
+    - include: function-call
+    - include: attribute-test
+    - include: wildcard
+    - include: operators
+    - include: brackets
+    - include: parens
+    - include: path-separator
+    - include: name-test
+
+  strings:
+    - match: "'"
+      scope: punctuation.definition.string.begin.xpath
+      push:
+        - meta_scope: string.quoted.single.xpath
+        - match: "'"
+          scope: punctuation.definition.string.end.xpath
+          pop: 1
+    - match: '"'
+      scope: punctuation.definition.string.begin.xpath
+      push:
+        - meta_scope: string.quoted.double.xpath
+        - match: '"'
+          scope: punctuation.definition.string.end.xpath
+          pop: 1
+
+  numbers:
+    - match: '\b\d+(\.\d+)?\b'
+      scope: constant.numeric.xpath
+
+  variable-reference:
+    - match: '\$\s*{{qname}}'
+      scope: variable.other.xpath
+
+  axis:
+    # full axis specifier: `child::`, `attribute::`, ...
+    - match: '\b({{axis_name}})\s*(::)'
+      captures:
+        1: keyword.other.axis.xpath
+        2: punctuation.separator.axis.xpath
+
+  node-type-test:
+    # `text()`, `node()`, `comment()`, `processing-instruction()`
+    - match: '\b({{node_type}})\s*(\()'
+      captures:
+        1: support.function.node-type.xpath
+        2: punctuation.section.group.begin.xpath
+      push:
+        - match: '\)'
+          scope: punctuation.section.group.end.xpath
+          pop: 1
+        - include: strings
+
+  function-call:
+    - match: '\b({{qname}})\s*(\()'
+      captures:
+        1: support.function.xpath
+        2: punctuation.section.group.begin.xpath
+      push:
+        - match: '\)'
+          scope: punctuation.section.group.end.xpath
+          pop: 1
+        - match: ','
+          scope: punctuation.separator.arguments.xpath
+        - include: main
+
+  attribute-test:
+    - match: '@'
+      scope: keyword.operator.axis.attribute.xpath
+      push:
+        - match: '\*'
+          scope: entity.other.attribute-name.xpath keyword.operator.wildcard.xpath
+          pop: 1
+        - match: '{{qname}}'
+          scope: entity.other.attribute-name.xpath
+          pop: 1
+        - match: '(?=\S)'
+          pop: 1
+
+  wildcard:
+    - match: '{{identifier}}\s*(:)\s*(\*)'
+      captures:
+        1: punctuation.separator.namespace.xpath
+        2: keyword.operator.wildcard.xpath
+    - match: '\*'
+      scope: keyword.operator.wildcard.xpath
+
+  operators:
+    # `and`/`or`/`mod`/`div` are only operators when not preceded by `@`, `::`,
+    # `(`, `[`, `,`, another operator, or the start of the expression (per the
+    # XPath 1.0 lexical disambiguation rule) - otherwise they're plain names
+    # (e.g. an element named `div`).
+    - match: '(?<=[\w.\-)\]*''"])\s*\b(and|or)\b'
+      scope: keyword.operator.logical.xpath
+    - match: '(?<=[\w.\-)\]*''"])\s*\b(mod|div)\b'
+      scope: keyword.operator.arithmetic.xpath
+    - match: '!=|<=|>=|=|<|>'
+      scope: keyword.operator.comparison.xpath
+    - match: '\|'
+      scope: keyword.operator.union.xpath
+    - match: '[+-]'
+      scope: keyword.operator.arithmetic.xpath
+
+  brackets:
+    - match: '\['
+      scope: punctuation.section.brackets.begin.xpath
+      push:
+        - meta_scope: meta.predicate.xpath
+        - match: '\]'
+          scope: punctuation.section.brackets.end.xpath
+          pop: 1
+        - include: main
+
+  parens:
+    - match: '\('
+      scope: punctuation.section.group.begin.xpath
+      push:
+        - match: '\)'
+          scope: punctuation.section.group.end.xpath
+          pop: 1
+        - include: main
+
+  path-separator:
+    - match: '//'
+      scope: punctuation.separator.path.descendant-or-self.xpath
+    - match: '/'
+      scope: punctuation.separator.path.xpath
+    - match: '\.\.'
+      scope: keyword.operator.parent.xpath
+    - match: '\.'
+      scope: keyword.operator.self.xpath
+
+  name-test:
+    - match: '{{qname}}'
+      scope: entity.name.tag.xpath
