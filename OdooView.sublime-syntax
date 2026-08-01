@@ -24,7 +24,7 @@ contexts:
   # -----------------------------------------------------------------------
 
   view-directive:
-    - match: (readonly|invisible|context|options|domain|required|column_invisible|colors|eval|filter_domain|decoration-{{owl_attribute_charset}}+)
+    - match: (readonly|invisible|context|options|domain|search|required|column_invisible|colors|eval|filter_domain|decoration-{{owl_attribute_charset}}+)
       scope: entity.other.attribute-name
       push: view-directive-assignment
 
@@ -127,8 +127,8 @@ contexts:
         - include: t-tag-with-tcall-attribute
 
   t-tag-with-tcall-attribute:
-      # t-call -> name
-    - match: (?i:(t-call(-{{owl_attribute_charset}}+)?))
+      # t-call / t-name -> name
+    - match: (?i:(t-call(-{{owl_attribute_charset}}+)?|t-name))
       scope: entity.other.attribute-name
       push: qweb-symbols-assignment
       # name.f - name.translate -> string format
@@ -145,7 +145,7 @@ contexts:
   # -----------------------------------------------------------------------
 
   qweb-directive:
-    - match: (?i:(id))
+    - match: (?i:(id|t-name))
       scope: entity.other.attribute-name
       push: qweb-symbols-assignment
     # `t-att` attribute

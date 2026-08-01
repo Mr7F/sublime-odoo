@@ -132,11 +132,13 @@ contexts:
         0: punctuation.section.interpolation.end.owl
 
   # -----------------------------------------------------------------------
-  # OWL components (camel case tag)
+  # OWL components (camel case tag), and `<t t-call="...">` / `<t
+  # t-set-slot="...">` (whose non-`t-*` attributes are call/slot
+  # parameters, evaluated as JS just like component attributes)
   # -----------------------------------------------------------------------
 
   owl-component-tag:
-    - match: (<)([A-Z][A-Za-z0-9_]+)
+    - match: (<)([A-Z][A-Za-z0-9_]+|t(?=[^>]*\b(?:t-call|t-set-slot)\b))
       captures:
         1: punctuation.definition.tag.begin.opening.xml
         2: entity.name.tag.localname.xml

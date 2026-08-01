@@ -8,6 +8,13 @@
 #                                                 ^^^^^^^^^^^^^^^^^^^ string.quoted.single.owl source.js
 #                                                                    ^ punctuation.definition.string.end.owl
 
+<t t-elif="state.count === 0"/>
+#          ^^^^^^^^^^^^^^^^^ string.quoted.double.owl source.js
+
+<t t-else=""/>
+#         ^ punctuation.definition.string.begin.owl
+#          ^ punctuation.definition.string.end.owl
+
 <t t-att-class="{ active: props.active, disabled: !props.enabled }"/>
 #               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.owl source.js
 #                         ^^^^^^^^^^^^ string.quoted.double.owl source.js
@@ -33,17 +40,19 @@
 #                                                           ^^ string.quoted.double.xml - source.js
 #                                                                                ^^^^^^^^^ string.quoted.double.xml - source.js
 
-<t t-att-class="
-    props.active
-#   ^^^^^^^^^^^^ string.quoted.double.owl source.js
-        ? 'active'
-#       ^ string.quoted.double.owl source.js
-#         ^^^^^^^^ string.quoted.double.owl source.js string.quoted.single.js
-        : ''
-#       ^ string.quoted.double.owl source.js
-#         ^^ string.quoted.double.owl source.js string.quoted.single.js
-  "/>
-# ^ punctuation.definition.string.end.owl
+<t t-set-slot="page_1" title="'Page 1'" isVisible="true">
+#              ^^^^^^ string.quoted.double.xml - source.js
+#                              ^^^^ string.quoted.double.owl source.js
+#                                                  ^^^^ string.quoted.double.owl source.js
+</t>
+
+<t t-att-class="props.active ? 'active' : ''"/>
+#               ^^^^^^^^^^^^ string.quoted.double.owl source.js
+#                            ^ string.quoted.double.owl source.js
+#                              ^^^^^^^^ string.quoted.double.owl source.js string.quoted.single.js
+#                                       ^ string.quoted.double.owl source.js
+#                                         ^^ string.quoted.double.owl source.js string.quoted.single.js
+#                                           ^ punctuation.definition.string.end.owl
 
 
   <SelectMenu t-if="choices"
@@ -64,3 +73,24 @@
 #                                                                    ^^^^^^ meta.string.js string.quoted.single.js
 
 />
+
+<textarea t-ref="textareaRef" t-on-blur.stop="this.onBlur()" t-out="this.props.value or ''"/>
+#                ^^^^^^^^^^^ string.quoted.double.xml - source.js
+#                                             ^^^^^^^^^^^^^ string.quoted.double.owl source.js
+#                                                                   ^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.owl source.js
+#                                                                                       ^^ string.quoted.double.owl source.js string.quoted.single.js
+
+<tr t-foreach="items" t-as="item" t-key="item.id">
+#              ^^^^^ string.quoted.double.owl source.js
+#                           ^^^^ string.quoted.double.owl source.js
+#                                        ^^^^^^^ string.quoted.double.owl source.js
+    <t t-set="name" t-value="item[0]"/>
+#             ^^^^ string.quoted.double.owl source.js
+#                            ^^^^^^^ string.quoted.double.owl source.js
+    <input class="o_input" type="text" t-if="item.visible" placeholder="eg: name" t-att-value="name"/>
+#                 ^^^^^^^ string.quoted.double.xml - source.js
+#                                ^^^^ string.quoted.double.xml - source.js
+#                                            ^^^^^^^^^^^^ string.quoted.double.owl source.js
+#                                                                       ^^^^^^^^ string.quoted.double.xml - source.js
+#                                                                                              ^^^^ string.quoted.double.owl source.js
+</tr>

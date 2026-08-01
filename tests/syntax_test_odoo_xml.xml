@@ -1,0 +1,21 @@
+# SYNTAX TEST "Packages/sublime-odoo/OdooXml.sublime-syntax"
+
+<templates xml:space="preserve">
+#          ^^^ entity.other.attribute-name.namespace.xml
+#              ^^^^^ entity.other.attribute-name.localname.xml
+#                     ^^^^^^^^ string.quoted.double.xml
+    <t t-name="my_module.Component">
+#      ^^^^^^ text.xml.owl entity.other.attribute-name
+        <div t-att-class="{ active: state.isActive }"/>
+#                         ^^^^^^^^^^^^^^^^^^^^^^^^^^ text.xml.owl string.quoted.double.owl source.js
+    </t>
+</templates>
+
+<odoo noupdate="1">
+#     ^^^^^^^^ entity.other.attribute-name.localname.xml
+#               ^ string.quoted.double.xml
+    <record id="x" model="y"/>
+#    ^^^^^^ text.xml.odoo-view entity.name.tag.localname.xml
+    <field name="domain">[('is_company', '=', True)]</field>
+#                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ text.xml.odoo-view source.python
+</odoo>

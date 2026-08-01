@@ -8,6 +8,13 @@
 #                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.single.qweb source.python
 #                                                                                  ^ punctuation.definition.string.end.qweb
 
+<t t-elif="user.login == 'root'"/>
+#          ^^^^^^^^^^^^^^^^^^^^ string.quoted.double.qweb source.python
+
+<t t-else=""/>
+#         ^ punctuation.definition.string.begin.qweb
+#          ^ punctuation.definition.string.end.qweb
+
 <a t-attf-style="background: {{ user.company_id.email_secondary_color or '#875A7B' }}; color: #{user.company_id.email_primary_color or '#FFFFFF'};"/>
 #                ^^^^^^^^^^^^ string.quoted.double.qweb-attf
 #                            ^^ punctuation.section.interpolation.begin.qweb
@@ -27,6 +34,10 @@
 #                                                     ^^^^ meta.sequence.tuple.python constant.language.boolean.true.python
 #                                                                                          ^^^^^^^^ meta.string.python
 #                                                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+
+<field name="partner_id" search="[('is_company', '=', True)]"/>
+#                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
+#                                                     ^^^^ meta.sequence.tuple.python constant.language.boolean.true.python
 
 <field name="domain">[('id', 'in', record.ids)]</field>
 #                    ^^^^^^^^^^^^^^^^^^^^^^^^^^ source.python
@@ -60,6 +71,9 @@
 # ^ punctuation.definition.string.end.qweb
 <div t-att-test="True"/>
 #                ^^^^ source.python.embedded.qweb constant.language.boolean.true.python
+
+<t t-name="my_module.report_template"/>
+#          ^^^^^^^^^^^^^^^^^^^^^^^^^ qweb.symbols string.quoted.double.qweb - source.python
 
 <templates>
     <t t-if="props.active and state.count > 0" t-attf-class="btn {{ props.name }}"/>
