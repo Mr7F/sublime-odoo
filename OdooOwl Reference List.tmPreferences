@@ -3,14 +3,12 @@
 <plist version="1.0">
   <dict>
     <key>name</key>
-    <string>Symbol List</string>
+    <string>Reference List</string>
     <key>scope</key>
-    <string>entity.name.class.owl</string>
+    <string>variable.function.owl, text.xml.owl source.js meta.property.object.js</string>
     <key>settings</key>
     <dict>
-      <key>showInSymbolList</key>
-      <integer>1</integer>
-      <key>showInIndexedSymbolList</key>
+      <key>showInIndexedReferenceList</key>
       <integer>1</integer>
     </dict>
   </dict>

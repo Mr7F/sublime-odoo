@@ -33,8 +33,11 @@ contexts:
     - match: (position)
       scope: entity.other.attribute-name
       push: owl-position-assignment
+    - match: (?i:(t-call(-{{owl_attribute_charset}}+)?)|t-inherit(?!{{owl_attribute_charset}}))
+      scope: entity.other.attribute-name
+      push: owl-reference-assignment
     # `t-att` attribute
-    - match: (?i:(t-name|t-set-slot|t-slot-scope|t-call|t-inherit({{owl_attribute_charset}}*))|t-ref)
+    - match: (?i:(t-name|t-set-slot|t-slot-scope|t-inherit({{owl_attribute_charset}}*))|t-ref)
       scope: entity.other.attribute-name
       push: tag-else-pop
     - match: (?i:(t-attf-{{owl_attribute_charset}}+)|(t-valuef))
@@ -145,7 +148,12 @@ contexts:
   # -----------------------------------------------------------------------
 
   owl-component-tag:
-    - match: (<)([A-Z][A-Za-z0-9_]+|t(?=[^>]*\b(?:t-call|t-set-slot)\b))
+    - match: (<)([A-Z][A-Za-z0-9_]+)
+      captures:
+        1: punctuation.definition.tag.begin.opening.xml
+        2: variable.function.owl entity.name.tag.localname.xml
+      push: owl-component-tag-content
+    - match: (<)(t)(?=[^>]*\b(?:t-call|t-set-slot)\b)
       captures:
         1: punctuation.definition.tag.begin.opening.xml
         2: entity.name.tag.localname.xml
@@ -222,9 +230,6 @@ contexts:
 
   owl-attribute-tag-code-name:
     - meta_scope: meta.tag.xml
-    - match: />
-      scope: punctuation.definition.tag.end.self-closing.xml
-      pop: 1
     - match: (add|remove)
       scope: entity.other.attribute-name
       push: owl-directive-assignment
@@ -239,14 +244,10 @@ contexts:
           2: entity.name.tag.localname.xml
           3: punctuation.definition.string.end.qweb
       pop: 1
-    - include: tag-end-missing-pop
-    - include: tag-attribute
+    - include: owl-attribute-tag-fallback
 
   owl-attribute-tag-attf-name:
     - meta_scope: meta.tag.xml
-    - match: />
-      scope: punctuation.definition.tag.end.self-closing.xml
-      pop: 1
     - match: (add|remove)
       scope: entity.other.attribute-name
       push: owl-attf-assignment
@@ -260,6 +261,12 @@ contexts:
           1: punctuation.definition.string.end.qweb
           2: entity.name.tag.localname.xml
           3: punctuation.definition.string.end.qweb
+      pop: 1
+    - include: owl-attribute-tag-fallback
+
+  owl-attribute-tag-fallback:
+    - match: />
+      scope: punctuation.definition.tag.end.self-closing.xml
       pop: 1
     - include: tag-end-missing-pop
     - include: tag-attribute
@@ -349,8 +356,8 @@ contexts:
         captures:
           0: punctuation.definition.string.begin.owl
         pop: 1
-        embed: owl-attribute-string
-        embed_scope: meta.string.owl owl.symbols
+        embed: owl-symbols-string
+        embed_scope: meta.string.owl
         escape: \"
         escape_captures:
           0: punctuation.definition.string.end.owl
@@ -358,12 +365,48 @@ contexts:
         captures:
           0: punctuation.definition.string.begin.owl
         pop: 1
-        embed: owl-attribute-string
-        embed_scope: meta.string.owl owl.symbols
+        embed: owl-symbols-string
+        embed_scope: meta.string.owl
         escape: \'
         escape_captures:
           0: punctuation.definition.string.end.owl
       - include: tag-else-pop
 
   owl-attribute-string:
+    - meta_scope: string.quoted.double.owl
+
+  owl-symbols-string:
+    - meta_scope: string.quoted.double.owl
+    - match: .+
+      scope: entity.name.class.owl
+
+  owl-reference-assignment:
+    - meta_content_scope: meta.directive.owl
+    - match: =
+      scope: meta.directive.owl punctuation.separator.key-value.owl
+      set: owl-reference-attribute
+    - include: tag-else-pop
+
+  owl-reference-attribute:
+      - match: \"
+        captures:
+          0: punctuation.definition.string.begin.owl
+        pop: 1
+        embed: owl-reference-string
+        embed_scope: meta.string.owl variable.function.owl
+        escape: \"
+        escape_captures:
+          0: punctuation.definition.string.end.owl
+      - match: \'
+        captures:
+          0: punctuation.definition.string.begin.owl
+        pop: 1
+        embed: owl-reference-string
+        embed_scope: meta.string.owl variable.function.owl
+        escape: \'
+        escape_captures:
+          0: punctuation.definition.string.end.owl
+      - include: tag-else-pop
+
+  owl-reference-string:
     - meta_scope: string.quoted.double.owl

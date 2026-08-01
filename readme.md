@@ -40,6 +40,65 @@ With this syntax highlighting comes the symbols, you can jump to view / componen
   <img src="img/demo_symbols.gif">
 </p>
 
+## Go To Definition
+
+You can configure key bind to make "go to definition" work in views / OWL components.
+```json
+// Standard sublime text `goto_definition`
+{ "keys": ["primary+d"], "command": "goto_definition" },
+// When the LSP has the feature
+{
+  "keys": ["primary+d"],
+  "command": "lsp_symbol_definition",
+  "context": [
+    { "key": "lsp.session_with_capability", "operand": "definitionProvider" },
+    { "key": "auto_complete_visible", "operand": false }
+  ]
+},
+// Custom Odoo "Go To Definition"
+{
+  "keys": ["primary+d"],
+  "command": "goto_definition_odoo_xml",
+  "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml.odoo-view, text.xml.owl, text.xml.odoo" }]
+},
+```
+
+Same for `goto_reference`.
+```json
+{ "keys": ["primary+shift+r"], "command": "goto_reference" },
+{
+  "keys": ["primary+shift+r"],
+  "command": "goto_reference_odoo_xml",
+  "context": [{ "key": "selector", "operator": "equal", "operand": "text.xml.odoo-view, text.xml.owl, text.xml.odoo" }]
+},
+```
+
+
+<p align="center">
+  <img src="img/go_to_definition_1.png">
+</p>
+
+<p align="center">
+  <img src="img/go_to_definition_2.png">
+</p>
+
+<p align="center">
+  <img src="img/go_to_definition_3.png">
+</p>
+
+<p align="center">
+  <img src="img/go_to_definition_4.png">
+</p>
+
+<p align="center">
+  <img src="img/go_to_definition_5.png">
+</p>
+
+<p align="center">
+  <img src="img/go_to_references.png">
+</p>
+
+
 ## Commands
 Please install [ripgrep](https://github.com/BurntSushi/ripgrep) to use most of commands (they are use instead of slow python code to get the list of modules, list of models, etc)
 

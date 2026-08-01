@@ -113,10 +113,10 @@ contexts:
     # `(`, `[`, `,`, another operator, or the start of the expression (per the
     # XPath 1.0 lexical disambiguation rule) - otherwise they're plain names
     # (e.g. an element named `div`).
-    - match: '(?<=[\w.\-)\]*''"])\s*\b(and|or)\b'
-      scope: keyword.operator.logical.xpath
-    - match: '(?<=[\w.\-)\]*''"])\s*\b(mod|div)\b'
-      scope: keyword.operator.arithmetic.xpath
+    - match: '(?<=[\w.\-)\]*''"])\s*\b(?:(and|or)|(mod|div))\b'
+      captures:
+        1: keyword.operator.logical.xpath
+        2: keyword.operator.arithmetic.xpath
     - match: '!=|<=|>=|=|<|>'
       scope: keyword.operator.comparison.xpath
     - match: '\|'

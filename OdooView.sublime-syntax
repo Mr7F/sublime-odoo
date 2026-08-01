@@ -34,6 +34,9 @@ contexts:
     - match: (position)
       scope: entity.other.attribute-name
       push: view-position-assignment
+    - match: (ref|inherit_id)
+      scope: entity.other.attribute-name
+      push: qweb-reference-assignment
 
   view-directive-assignment:
     - meta_content_scope: meta.directive.qweb
@@ -138,10 +141,27 @@ contexts:
 
   tag:
     - meta_prepend: true
+    - include: odoo-button
     - include: owl-component-tag
     - include: odoo-view-special-tag
     - include: odoo-view-attribute-tag
     - include: t-tag-with-tcall
+
+  odoo-button:
+    - match: (<)(button)\b
+      captures:
+        1: punctuation.definition.tag.begin.opening.xml
+        2: entity.name.tag.localname.xml
+      push:
+        - meta_scope: meta.tag.opening.xml
+        - match: (/?>)
+          captures:
+            1: punctuation.definition.tag.end.opening.xml
+          pop: 1
+        - match: name
+          scope: entity.other.attribute-name
+          push: view-directive-assignment
+        - include: tag-attribute
 
   # Special tags that contain code
   odoo-view-special-tag:
@@ -207,9 +227,6 @@ contexts:
 
   odoo-view-attribute-tag-code-name:
     - meta_scope: meta.tag.xml
-    - match: />
-      scope: punctuation.definition.tag.end.self-closing.xml
-      pop: 1
     - match: (add|remove)
       scope: entity.other.attribute-name
       push: view-directive-assignment
@@ -224,14 +241,10 @@ contexts:
           2: entity.name.tag.localname.xml
           3: punctuation.definition.string.end.qweb
       pop: 1
-    - include: tag-end-missing-pop
-    - include: tag-attribute
+    - include: odoo-view-attribute-tag-fallback
 
   odoo-view-attribute-tag-attf-name:
     - meta_scope: meta.tag.xml
-    - match: />
-      scope: punctuation.definition.tag.end.self-closing.xml
-      pop: 1
     - match: (add|remove)
       scope: entity.other.attribute-name
       push: qweb-attf-assignment
@@ -245,6 +258,12 @@ contexts:
           1: punctuation.definition.string.end.qweb
           2: entity.name.tag.localname.xml
           3: punctuation.definition.string.end.qweb
+      pop: 1
+    - include: odoo-view-attribute-tag-fallback
+
+  odoo-view-attribute-tag-fallback:
+    - match: />
+      scope: punctuation.definition.tag.end.self-closing.xml
       pop: 1
     - include: tag-end-missing-pop
     - include: tag-attribute
@@ -290,10 +309,12 @@ contexts:
         - include: t-tag-with-tcall-attribute
 
   t-tag-with-tcall-attribute:
-      # t-call / t-name -> name
-    - match: (?i:(t-call(-{{owl_attribute_charset}}+)?|t-name))
+    - match: (?i:(t-name))
       scope: entity.other.attribute-name
       push: qweb-symbols-assignment
+    - match: (?i:(t-call(-{{owl_attribute_charset}}+)?))
+      scope: entity.other.attribute-name
+      push: qweb-reference-assignment
       # name.f - name.translate -> string format
     - match: (?i:{{owl_attribute_charset}}+(\.f|\.translate))
       scope: entity.other.attribute-name
@@ -432,8 +453,8 @@ contexts:
         captures:
           0: punctuation.definition.string.begin.qweb
         pop: 1
-        embed: qweb-attribute-string
-        embed_scope: meta.string.qweb qweb.symbols
+        embed: qweb-symbols-string
+        embed_scope: meta.string.qweb
         escape: \"
         escape_captures:
           0: punctuation.definition.string.end.qweb
@@ -441,12 +462,48 @@ contexts:
         captures:
           0: punctuation.definition.string.begin.qweb
         pop: 1
-        embed: qweb-attribute-string
-        embed_scope: meta.string.qweb qweb.symbols
+        embed: qweb-symbols-string
+        embed_scope: meta.string.qweb
         escape: \'
         escape_captures:
           0: punctuation.definition.string.end.qweb
       - include: tag-else-pop
 
   qweb-attribute-string:
+    - meta_scope: string.quoted.double.qweb
+
+  qweb-symbols-string:
+    - meta_scope: string.quoted.double.qweb
+    - match: .+
+      scope: entity.name.class.qweb
+
+  qweb-reference-assignment:
+    - meta_content_scope: meta.directive.qweb
+    - match: =
+      scope: meta.directive.qweb punctuation.separator.key-value.qweb
+      set: qweb-reference-attribute
+    - include: tag-else-pop
+
+  qweb-reference-attribute:
+      - match: \"
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: qweb-reference-string
+        embed_scope: meta.string.qweb variable.function.qweb
+        escape: \"
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+      - match: \'
+        captures:
+          0: punctuation.definition.string.begin.qweb
+        pop: 1
+        embed: qweb-reference-string
+        embed_scope: meta.string.qweb variable.function.qweb
+        escape: \'
+        escape_captures:
+          0: punctuation.definition.string.end.qweb
+      - include: tag-else-pop
+
+  qweb-reference-string:
     - meta_scope: string.quoted.double.qweb

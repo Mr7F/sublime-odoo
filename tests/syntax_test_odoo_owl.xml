@@ -1,4 +1,4 @@
-# SYNTAX TEST "Packages/sublime-odoo/OdooOwl.sublime-syntax"
+# SYNTAX TEST partial-symbols "Packages/sublime-odoo/OdooOwl.sublime-syntax"
 
 <t t-if="props.active and state.count > 0" t-esc='record.display_name'/>
 #       ^ punctuation.definition.string.begin.owl
@@ -53,7 +53,18 @@
 #                                                                               ^ punctuation.section.interpolation.end.owl
 
 <t t-name="my_module.Component"/>
-#          ^^^^^^^^^^^^^^^^^^^ owl.symbols string.quoted.double.owl - source.js
+#          ^^^^^^^^^^^^^^^^^^^ string.quoted.double.owl entity.name.class.owl - source.js
+
+<t t-call="my_module.Component"/>
+#          ^^^^^^^^^^^^^^^^^^^ variable.function.owl string.quoted.double.owl - source.js
+
+<t t-name="my_module.Child" t-inherit="my_module.Parent" t-inherit-mode="primary">
+#                                      ^^^^^^^^^^^^^^^^ variable.function.owl string.quoted.double.owl - source.js
+#                                                                        ^^^^^^^ string.quoted.double.xml - variable.function.owl - source.js
+</t>
+
+<NewContentRefreshBanner onClickRefresh.bind="this._refreshView"/>
+#                                                  ^^^^^^^^^^^^ source.js meta.property.object.js
 
 <Dialog title="props.title" disabled="!props.canOpen" size="lg" title.translate="Open menu"/>
 #              ^^^^^^^^^^^ string.quoted.double.owl source.js
@@ -77,7 +88,7 @@
 
 
   <SelectMenu t-if="choices"
-#  ^^^^^^^^^^ text.xml.owl meta.tag.xml entity.name.tag.localname.xml
+#  ^^^^^^^^^^ text.xml.owl meta.tag.xml variable.function.owl entity.name.tag.localname.xml
     t-props="this.props.childProps"
 #   ^^^^^^^ text.xml.owl meta.tag.xml entity.other.attribute-name
 #          ^ punctuation.separator.key-value.owl

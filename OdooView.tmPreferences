@@ -5,7 +5,7 @@
     <key>name</key>
     <string>Symbol List</string>
     <key>scope</key>
-    <string>qweb.symbols</string>
+    <string>entity.name.class.qweb</string>
     <key>settings</key>
     <dict>
       <key>showInSymbolList</key>
