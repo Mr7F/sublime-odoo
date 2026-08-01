@@ -15,6 +15,10 @@ Choose "XML - Odoo", and it will automatically choose the right syntax
 - OWL syntax (with JS in expression) if inside `<templates/>`
 - View syntax (with python in expression) if inside `<odoo/>`
 
+<p align="center">
+  <img src="img/installation.png">
+</p>
+
 It highlight JS template inside Python template (eg template of kanban views)
 
 <p align="center">
