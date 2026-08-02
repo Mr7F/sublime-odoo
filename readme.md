@@ -41,7 +41,10 @@ With this syntax highlighting comes the symbols, you can jump to view / componen
 </p>
 
 ## Go To Definition
-You can configure key bind to make "go to definition" work in views / OWL components.
+You can configure key bind to make "go to definition" work in views / OWL components
+(it uses sublime text symbols indexes, and so many results can be returned, they are sorted with a heuristic,
+similar filenames are displayed first).
+
 ```json
 // Standard sublime text `goto_definition`
 { "keys": ["primary+d"], "command": "goto_definition" },
