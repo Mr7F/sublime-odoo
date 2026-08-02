@@ -2,6 +2,8 @@ import os
 import subprocess
 import xml.etree.ElementTree as ET
 
+import sublime
+
 
 def run_rg(args):
     try:
@@ -12,6 +14,7 @@ def run_rg(args):
             text=True,
         )
     except FileNotFoundError:
+        sublime.status_message("Odoo: ripgrep (rg) is required for project searches")
         return []
     return result.stdout.splitlines()
 
