@@ -117,12 +117,12 @@
 </list>
 
 <button name="action_retry_post"
-#             ^^^^^^^^^^^^^^^^^ source.python
+#             ^^^^^^^^^^^^^^^^^ source.python variable.function.qweb
         string="Retry"
         type="object" class="oe_highlight"
         invisible="state != 'failed'"/>
-<button name="action_cancel" type="object"/>
-#             ^^^^^^^^^^^^^ source.python
+<button name='action_cancel' type="object"/>
+#             ^^^^^^^^^^^^^ source.python variable.function.qweb
 
 <templates>
     <t t-if="props.active and state.count > 0" t-attf-class="btn {{ props.name }}"/>

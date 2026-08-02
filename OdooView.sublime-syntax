@@ -158,9 +158,14 @@ contexts:
           captures:
             1: punctuation.definition.tag.end.opening.xml
           pop: 1
-        - match: name
-          scope: entity.other.attribute-name
-          push: view-directive-assignment
+          # name are reported as "symbols" for "go to references"
+        - match: (name)(\s*)(=)(\s*)(["'])([A-Za-z_][A-Za-z0-9_]*)(\5)
+          captures:
+            1: entity.other.attribute-name
+            3: punctuation.separator.key-value.qweb
+            5: meta.string.qweb punctuation.definition.string.begin.qweb
+            6: meta.string.qweb string.quoted.qweb source.python variable.function.qweb
+            7: meta.string.qweb punctuation.definition.string.end.qweb
         - include: tag-attribute
 
   # Special tags that contain code

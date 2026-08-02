@@ -183,3 +183,18 @@ class TestViewGotoPythonMethod(_ViewFixture, DeferrableTestCase):
         }
         method = self.python_view.find("action_confirm", 0, sublime.LITERAL)
         self.assertTrue(method.contains(self.python_view.sel()[0].a))
+
+    def test_goto_reference_from_python_method(self):
+        method = self.python_view.find("action_confirm", 0, sublime.LITERAL)
+        self.window.focus_view(self.python_view)
+        self.python_view.sel().clear()
+        self.python_view.sel().add(sublime.Region(method.a))
+
+        self.window.run_command("goto_reference")
+
+        yield {
+            "condition": lambda: self.window.active_view().file_name() == self.file_path,
+            "timeout": 2000,
+        }
+        name = self.view.find('name="action_confirm"', 0, sublime.LITERAL)
+        self.assertTrue(name.contains(self.view.sel()[0].a))
