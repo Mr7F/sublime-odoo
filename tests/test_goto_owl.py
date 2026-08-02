@@ -452,6 +452,38 @@ class TestDedupeLocations(DeferrableTestCase):
             shutil.rmtree(real_dir, ignore_errors=True)
 
 
+class TestSortLocations(DeferrableTestCase):
+    def setUp(self):
+        self.mod = importlib.import_module("sublime-odoo.odoo_goto_symbol")
+
+    def _loc(self, path):
+        return sublime.SymbolLocation(
+            path, path, 1, 1, "OdooOwl", sublime.SYMBOL_TYPE_DEFINITION,
+            (sublime.KIND_ID_AMBIGUOUS, "", ""))
+
+    def test_sorts_by_path_proximity(self):
+        locations = [
+            self._loc("/test/other/target.js"),
+            self._loc("/test/aaa/other/target.js"),
+            self._loc("/test/aaa/bbb/other.js"),
+            self._loc("/test/aaa/bbb/ccc.xml"),
+            self._loc("/test/aaa/bbb/ccc.js"),
+        ]
+
+        result = self.mod._sort_locations("/test/aaa/bbb/ccc.js", locations)
+
+        self.assertEqual(
+            [location.path for location in result],
+            [
+                "/test/aaa/bbb/ccc.js",
+                "/test/aaa/bbb/ccc.xml",
+                "/test/aaa/bbb/other.js",
+                "/test/aaa/other/target.js",
+                "/test/other/target.js",
+            ],
+        )
+
+
 class TestJsClassLocationsAcrossSyntaxPackages(DeferrableTestCase):
 
     def setUp(self):

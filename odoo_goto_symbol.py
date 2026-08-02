@@ -82,6 +82,36 @@ def _dedupe_locations(locations):
     return result
 
 
+def _path_parts(path):
+    directory, filename = os.path.split(os.path.normcase(os.path.realpath(path)))
+    stem, extension = os.path.splitext(filename)
+    return tuple(part for part in directory.split(os.sep) if part) + (stem, extension)
+
+
+def _sort_locations(current_file, locations):
+    if not current_file:
+        return locations
+
+    current = _path_parts(current_file)
+
+    def key(location):
+        target = _path_parts(location.path)
+        common = next(
+            (i for i, parts in enumerate(zip(current, target)) if parts[0] != parts[1]),
+            min(len(current), len(target)),
+        )
+        return (
+            target != current,
+            target[:-1] != current[:-1],
+            -common,
+            target,
+            location.row,
+            location.col,
+        )
+
+    return sorted(locations, key=key)
+
+
 def _finalize(locations):
     return _dedupe_locations(
         location for location in locations if location.syntax in _ODOO_SYNTAXES
@@ -197,7 +227,7 @@ def _reference_fallback(window, view, pt):
 
 def _navigate(view, symbol, locations, title):
     default_symbol.navigate_to_symbol(
-        view, symbol, locations, False, False, False,
+        view, symbol, _sort_locations(view.file_name(), locations), False, False, False,
         "%s of %s" % (title, symbol),
     )
 
